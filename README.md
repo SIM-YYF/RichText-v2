@@ -1,1 +1,1 @@
-# RichText
+# RichText-v2
