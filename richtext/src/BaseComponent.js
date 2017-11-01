@@ -23,7 +23,7 @@ export default class BaseComponent extends Component {
     }
 
     keyboardWillShow(event) {
-        this.keyboardHeight = event.endCoordinates.height;
+        // this.keyboardHeight = event.endCoordinates.height;
     }
 
     keyboardWillHide(event) {

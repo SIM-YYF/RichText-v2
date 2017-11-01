@@ -15,8 +15,7 @@ class ToolBarComponent extends Component {
 
     
   _ok_press = () => {
-    // body
-    console.log("ssss");
+    this.props.showPreviewArticleModal();
   };
 
   render() {

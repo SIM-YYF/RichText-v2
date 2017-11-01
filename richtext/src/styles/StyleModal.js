@@ -5,87 +5,83 @@ import {
     StyleSheet,
     TouchableHighlight,
     ListView,
-    Dimensions
+    Dimensions,
 } from "react-native";
-import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter'
-import BaseComponent from './BaseComponent'
+import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
+import BaseComponent from '../BaseComponent'
 
-class ColorStyleModal extends BaseComponent {
+
+
+let  showTimeout = 0;
+class StyleModal extends  BaseComponent{
+
+
 
     constructor(props) {
         super(props);
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2
         });
+
         this.state = {
             show: false,
-            udpateColorType: 'textColor',
-            dataSource: ds.cloneWithRows(['red', 'green', 'blue'])
+            dataSource: ds.cloneWithRows(["正文", "一级标题 (大)", "二级标题 (中)", "三级标题 (小)", "列表"])
         };
-        this._selection_sytle = this._selection_sytle.bind(this);
     }
 
-    _change_modal_state(isFocus, type) {
+
+
+    _change_modal_state(isFocus) {
         //编辑内容重新获取焦点时，隐藏样式层
-        if (isFocus) {
+        if(isFocus){
             this.setState({
                 show: false
             });
             return;
         }
-        if (!this.state.show) {
+        if(!this.state.show){
             this.props.getEditor().blurContentEditor();
         }
-        setTimeout(() => {
-            this.setState({
-                show: !this.state.show,
-                udpateColorType: type
-            });
-        }, 350)
 
+
+        showTimeout = setTimeout(()=>{
+            this.setState({
+                show: !this.state.show
+            });
+        }, 200)
     }
 
-    /**
-     * 用于操作动作切换时，隐藏正在显示的图层
-     */
     hiddenModal(){
         if(this.state.show){
             this.setState({
                 show: false,
+
             });
         }
+
     }
 
 
-//   选中对应的样式，通知编译器组件更新样式
-    _selection_sytle(color) {
-        RCTDeviceEventEmitter.emit('updateColor', {'udpateColorType': this.state.udpateColorType, 'color': color});
+    componentWillUnmount(){
+        clearTimeout(showTimeout)
+    }
+
+    _selection_sytle(style) {
+        RCTDeviceEventEmitter.emit('updateStyle', style);
         this.setState({
-            show: false
+            show: !this.state.show
         });
+
+
     }
+
 
     //返回cell的方法
     _render_Row(rowData, sectionID, rowID, highlightRow) {
-        let content = null;
-        switch (rowData) {
-            case 'red':
-                content = '红色';
-                break;
-            case 'green':
-                content = '绿色';
-                break;
-            case 'blue':
-                content = '蓝色';
-                break;
-            default:
-                break;
-        }
         return (
-            <TouchableHighlight underlayColor="#ccc" onPress={this._selection_sytle.bind(this, rowData)}>
+            <TouchableHighlight underlayColor="#f1f1f1" onPress={this._selection_sytle.bind(this, rowID)}>
                 <View
                     style={{
-                        flex: 1,
                         height: 50,
                         alignItems: "center",
                         justifyContent: "center",
@@ -94,13 +90,14 @@ class ColorStyleModal extends BaseComponent {
                 >
                     <Text
                         style={{
-                            fontSize: 14,
+                            fontSize: 16,
                             marginBottom: 0,
                             justifyContent: "center",
-                            alignItems: "center"
+                            alignItems: "center",
+                            color:'#5c5c5c'
                         }}
                     >
-                        {content}
+                        {rowData}
                     </Text>
                 </View>
             </TouchableHighlight>
@@ -115,15 +112,16 @@ class ColorStyleModal extends BaseComponent {
                     height: 1,
                     width: Dimensions.get("window").width - 5,
                     marginLeft: 5,
-                    backgroundColor: "lightgray"
+                    backgroundColor: "#f1f1f1"
                 }}
             />
         );
     }
 
-    renderView() {
+    renderView(){
         return (
             <View style={styles.container}>
+
                 <View style={styles.subView}>
                     <ListView
                         style={{flex: 1}}
@@ -133,25 +131,25 @@ class ColorStyleModal extends BaseComponent {
                         renderSeparator={this._renderSeparator} // 设置分割线样式
                     />
                 </View>
-
             </View>
+
         );
     }
 
     render() {
-        if (this.state.show) {
+        if(this.state.show){
             return this.renderView();
-        } else {
+        }else{
             return null;
         }
     }
 }
 
-// define your styles
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#ECECF0",
-        height: 180
+        height:180
     },
     subView: {
         flex:1,
@@ -162,11 +160,11 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderColor: "#ccc",
     },
+
     listViewStyle: {
         flexDirection: "column", //设置横向布局
         flexWrap: "wrap" //设置换行显示
     }
 });
 
-//make this component available to the app
-export default ColorStyleModal;
+export default StyleModal;

@@ -5,10 +5,19 @@ import {
     StyleSheet,
     TouchableHighlight,
     ListView,
-    Dimensions
+    Dimensions,
+    Image
 } from "react-native";
 import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter'
-import BaseComponent from './BaseComponent'
+import BaseComponent from '../BaseComponent'
+
+let showTimeout = 0;
+
+const bgColorStyles = [
+    {icon: require("../../img/bgcolor_d3f3bb_green.png"), text: "绿色", color:'#d3f3bb'},
+    {icon: require("../../img/bgcolor_f8f4b3_yellow.png"), text: "黄色", color: '#f8f4b3'},
+    {icon: require("../../img/bgcolor_f9c2bb_red.png"), text: "红色", color: '#f9c2bb'},
+]
 
 class ColorStyleModal extends BaseComponent {
 
@@ -21,10 +30,11 @@ class ColorStyleModal extends BaseComponent {
         this.state = {
             show: false,
             udpateColorType: 'textColor',
-            dataSource: ds.cloneWithRows(['red', 'green', 'blue'])
+            dataSource: ds.cloneWithRows(bgColorStyles)
         };
         this._selection_sytle = this._selection_sytle.bind(this);
     }
+
     _change_modal_state(isFocus, type) {
 
         //编辑内容重新获取焦点时，隐藏样式层
@@ -39,23 +49,26 @@ class ColorStyleModal extends BaseComponent {
         if (!this.state.show) {
             this.props.getEditor().blurContentEditor();
         }
-        setTimeout(() => {
+        showTimeout = setTimeout(() => {
             this.setState({
                 show: !this.state.show,
                 udpateColorType: type
             });
-        }, 350)
+        }, 200)
 
     }
 
-    hiddenModal(){
-        if(this.state.show){
+    hiddenModal() {
+        if (this.state.show) {
             this.setState({
                 show: false,
             });
         }
     }
 
+    componentWillUnmount() {
+        clearTimeout(showTimeout)
+    }
 
 //   选中对应的样式，通知编译器组件更新样式
     _selection_sytle(color) {
@@ -67,40 +80,32 @@ class ColorStyleModal extends BaseComponent {
 
     //返回cell的方法
     _render_Row(rowData, sectionID, rowID, highlightRow) {
-        let content = null;
-        switch (rowData) {
-            case 'red':
-                content = '红色';
-                break;
-            case 'green':
-                content = '绿色';
-                break;
-            case 'blue':
-                content = '蓝色';
-                break;
-            default:
-                break;
-        }
         return (
-            <TouchableHighlight underlayColor="#ccc" onPress={this._selection_sytle.bind(this, rowData)}>
+            <TouchableHighlight underlayColor="#f1f1f1" onPress={this._selection_sytle.bind(this, rowData.color)}>
                 <View
                     style={{
                         flex: 1,
                         height: 50,
                         alignItems: "center",
                         justifyContent: "center",
-                        flexDirection: "column"
+                        flexDirection: "row",
                     }}
                 >
+
+                    <Image style={{justifyContent: "center", alignItems: "center", width: 50, height: 20,
+                    }}
+                           source={rowData.icon}></Image>
                     <Text
                         style={{
-                            fontSize: 14,
-                            marginBottom: 0,
+                            fontSize: 16,
+                            margin: 10,
+                            color: '#5c5c5c',
                             justifyContent: "center",
-                            alignItems: "center"
+                            alignItems: "center",
+                            textAlign: 'center',
                         }}
                     >
-                        {content}
+                        {rowData.text}
                     </Text>
                 </View>
             </TouchableHighlight>
@@ -115,7 +120,7 @@ class ColorStyleModal extends BaseComponent {
                     height: 1,
                     width: Dimensions.get("window").width - 5,
                     marginLeft: 5,
-                    backgroundColor: "lightgray"
+                    backgroundColor: "#f1f1f1"
                 }}
             />
         );
@@ -153,7 +158,7 @@ const styles = StyleSheet.create({
         height: 180
     },
     subView: {
-        flex:1,
+        flex: 1,
         marginLeft: 0,
         marginRight: 0,
         backgroundColor: "#fff",

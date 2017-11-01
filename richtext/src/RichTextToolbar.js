@@ -3,46 +3,47 @@ import {
     ListView,
     View,
     TouchableOpacity,
-    Image,
     StyleSheet,
     Text,
-    Dimensions,
-    Keyboard
+    PixelRatio,
+    Image,
+
 } from "react-native";
 import {actions} from "./const";
-import StyleModal from "./StyleModal";
-import ColorStyleModal from "./ColorStyleModal";
-import BgColorStyleModal from './BgColorStyleModal'
-import AudioStyleModal from "./AudioStyleModal";
+import StyleModal from "./styles/StyleModal";
+import ColorStyleModal from "./styles/ColorStyleModal";
+import BgColorStyleModal from './styles/BgColorStyleModal'
+import AudioStyleModal from "./styles/AudioStyleModal";
 import BaseComponent from './BaseComponent'
 
 
 const defaultActions = [
     actions.insertImage,
     actions.insertAudio,
+    actions.insertLink,
+
     actions.setBold,
     actions.setItalic,
-    actions.box_style,
     actions.box_text_color,
     actions.box_background_color,
-    actions.insertLink,
+    actions.box_style,
     actions.setHR,
 
 ];
 
 function getDefaultIcon() {
     const texts = {};
-    texts[actions.insertImage] = "插图";
-    texts[actions.insertAudio] = '音频';
-    texts[actions.setBold] = "加粗";
-    texts[actions.setItalic] = "斜体";
-    texts[actions.box_style] = "样式";
-    texts[actions.box_text_color] = "文色";
-    texts[actions.box_background_color] = "背色";
+    texts[actions.insertImage] = {icon: require("../img/icon_add_img.png"), text: "插图"};
+    texts[actions.insertAudio] = {icon: require('../img/icon_add_audio.png'), text: '音频'};
+    texts[actions.insertLink] = {icon: require('../img/icon_add_link.png'), text: '链接'};
 
-    texts[actions.insertLink] = "链接";
-    //插入水平线
-    texts[actions.setHR] = "水平线";
+
+    texts[actions.setBold] = {icon: require('../img/icon_bold.png'), text: '加粗'};
+    texts[actions.setItalic] = {icon: require('../img/icon_font_italics.png'), text: '斜体'};
+    texts[actions.box_text_color] = {icon: require('../img/icon_font_color.png'), text: '字色'};
+    texts[actions.box_background_color] = {icon: require('../img/icon_font_bgcolor.png'), text: '背景色'};
+    texts[actions.box_style] = {icon: require('../img/icon_font_styles.png'), text: '样式'};
+    texts[actions.setHR] = {icon: require('../img/icon_divider.png'), text: '分割线'};
 
     return texts;
 }
@@ -107,78 +108,68 @@ export default class RichTextToolbar extends BaseComponent {
     }
 
     getRows(actions, selectedItems) {
-        return actions.map(action => {
-            return {action, selected: selectedItems.includes(action)};
+        return actions.map((action, index) => {
+            return {action, selected: selectedItems.includes(action), index};
         });
     }
 
-    _renderAction(action, selected) {
-        const icon = getDefaultIcon()[action];
+    _renderAction(action, selected, index) {
+        const {icon, text} = getDefaultIcon()[action];
+
+        //backgroundImage:url('../img/icon_blue_bar_border.png'),
+        const border_left_style = {
+            backgroundColor: '#f2faff',
+
+            borderLeftColor: '#dff3ff',
+            borderLeftWidth: 0.5,
+            borderStyle: "solid",
+            borderColor: 'transparent',
+        }
+        const diff_icons_style = index > 2 ? (index === 3 ? [styles.diff_icons_container, border_left_style] : [styles.diff_icons_container, {backgroundColor: '#f2faff'}]) : (styles.diff_icons_container);
+
+
         return (
-            <TouchableOpacity
-                key={action}
-                style={[
-                    {
-                        height: 50,
-                        width: 50
-                    }
-                ]}
-                onPress={() => this._onPress(action)}
-            >
-                <View
-                    style={{
-                        height: 50,
-                        width: 50,
-                        justifyContent: "center",
-                        alignItems: "flex-start"
-                    }}
-                >
-                    <Text
-                        style={{
-                            textAlign: "center",
-                            color: selected ? this.props.selectedIconTint
-                                : this.props.iconTint
-                        }}
-                    >
-                        {icon}
-                    </Text>
-                </View>
-            </TouchableOpacity>
+
+
+            <View style={diff_icons_style}>
+                <TouchableOpacity onPress={() => {
+                    this._onPress(action)
+                }}>
+                    <View style={styles.listView_item_container}>
+                        <Image style={styles.listView_item_icon} source={icon}></Image>
+
+                        <Text style={styles.listView_item_text}> {text} </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         );
     }
 
     render() {
-
         return (
-            <View style={{flexDirection: 'column'}}>
-                <View
-                    style={[
-                        {
+            <View>
+                <View style={styles.style_listView_container}>
 
-                            backgroundColor: "#EEEEEE",
-                            alignItems: "center",
-                            flexDirection: "column"
-                        },
-                        this.props.style
-                    ]}
-                >
                     <ListView
                         horizontal
                         contentContainerStyle={{
                             flexDirection: "row",
-                            marginLeft: 10
                         }}
                         dataSource={this.state.ds}
-                        renderRow={row => this._renderAction(row.action, row.selected)}
+                        renderRow={row => this._renderAction(row.action, row.selected, row.index)}
                         showsHorizontalScrollIndicator={false}
                     />
+                    <Image style={{height: 70, width: 24, position: 'absolute', right: 0}}
+                           source={require('../img/icon_scroll_hint.png')}/>
+
                 </View>
 
-
                 <View>
-                   <StyleModal ref={r => (this.StyleModal = r) } getEditor={() => this.props.getEditor()} keyboardHeight={260}  />
+                    <StyleModal ref={r => (this.StyleModal = r)} getEditor={() => this.props.getEditor()}
+                                keyboardHeight={260}/>
                     <ColorStyleModal ref={r => (this.ColorStyleModal = r)} getEditor={() => this.props.getEditor()}/>
-                    <BgColorStyleModal ref={r => (this.BgColorStyleModal = r)} getEditor={() => this.props.getEditor()}/>
+                    <BgColorStyleModal ref={r => (this.BgColorStyleModal = r)}
+                                       getEditor={() => this.props.getEditor()}/>
                     <AudioStyleModal ref={r => (this.AudioStyleModal = r)} getEditor={() => this.props.getEditor()}/>
                 </View>
 
@@ -186,13 +177,16 @@ export default class RichTextToolbar extends BaseComponent {
         );
     }
 
-    changeStyleModalWithFocus(){
+    changeStyleModalWithFocus() {
         this.StyleModal._change_modal_state(true)
         this.ColorStyleModal._change_modal_state(true)
         this.BgColorStyleModal._change_modal_state(true)
         this.AudioStyleModal._change_modal_state(true)
     }
-    _onPress(action) {
+
+    _onPress = (action) => {
+        console.log('_onPress:::::::')
+
         switch (action) {
             case actions.insertImage: //在插入点插入一张图片（删除选中的部分）
                 this.state.editor.prepareInsert();
@@ -242,8 +236,8 @@ export default class RichTextToolbar extends BaseComponent {
                 break;
             case actions.insertLink: //添加超链接
                 this.state.editor.prepareInsert();
-                if (this.props.onPressAddLink) {
-                    this.props.onPressAddLink();
+                if (this.state.editor.onPressAddLink) {
+                    this.state.editor.onPressAddLink();
                 }
                 break;
             case actions.setHR: //插入分隔线
@@ -257,5 +251,45 @@ const styles = StyleSheet.create({
     defaultSelectedButton: {
         backgroundColor: "red"
     },
-    defaultUnselectedButton: {}
+    defaultUnselectedButton: {},
+
+
+    style_listView_container: {
+        backgroundColor: "#FFFFFF",
+        flexDirection: "row",
+        borderTopColor: '#C1C1C1',
+        borderBottomColor: '#C1C1C1',
+        borderTopWidth: 0.8,
+        borderBottomWidth: 0.8,
+    },
+
+    diff_icons_container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    listView_item_container: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop:8,
+        marginBottom:8,
+        marginLeft:10,
+        marginRight:10,
+    },
+    listView_item_icon: {
+        justifyContent: "center",
+        alignItems: "center",
+        height: 20,
+        width: 20,
+    },
+    listView_item_text: {
+        textAlign: "center",
+        fontSize: 10,
+        color: '#8e8e8e',
+        marginTop: 5,
+
+    },
+
+
 });

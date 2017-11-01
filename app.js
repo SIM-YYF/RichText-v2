@@ -11,11 +11,13 @@ import {
   RichTextToolbar,
   KeyboardSpacer
 } from "./richtext/index";
-import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
 import ToolBarComponent from "./app/ToolBarComponent";
-import {uploadFile} from './richtext/src/uploadApi';
+import {uploadFile} from './richtext/src/utils/uploadApi';
 import {getScaleSize, getFileNameFromFileURL, imagePath} from './richtext/src/utils/common';
+import PreviewArticleModal from './richtext/src/modal/PreviewArticleModal'
+
 const ImagePicker = NativeModules.ImageCropPicker;
+
 
 export default class RichTextExample extends Component {
   constructor(props) {
@@ -25,48 +27,6 @@ export default class RichTextExample extends Component {
     };
     this.getHTML = this.getHTML.bind(this);
     this.setFocusHandlers = this.setFocusHandlers.bind(this);
-  }
-
-  componentDidMount() {
-    this.styleSubscription = RCTDeviceEventEmitter.addListener("updateStyle", (style)=> {
-      switch (parseInt(style)) {
-        case 0: //正文
-        // this.richtext.removeFormat(); //移除格式
-        this.richtext.setZWing(); 
-        break;
-        case 1: //一级标题
-        this.richtext.heading1()
-          break;
-        case 2: //二级标题
-        this.richtext.heading2()
-          break;
-        case 3: //三级标题
-        this.richtext.heading3()
-          break;
-        case 4: //列表
-        this.richtext.insertBulletsList();
-          break;
-        case 5: //设置文本库标签名
-        this.richtext.setBlockquote();
-          break;
-        default:
-          break;
-      }
-    });
-
-    this.colorSubscription = RCTDeviceEventEmitter.addListener("updateColor", (event)=> {
-       const  {udpateColorType, color} = event;
-        if(udpateColorType === 'textColor'){
-            this.richtext.setTextColor(color);
-        }else{
-          this.richtext.setBackgroundColor(color);
-        }
-
-    });
-  }
-
-  componentWillUnmount() {
-    this.subscription.remove();
   }
 
   //向编辑器中，插入超链接
@@ -100,7 +60,7 @@ export default class RichTextExample extends Component {
         formData.append('file', files);
         uploadFile(upload_urlD, formData).then(responseData => {
           //等比缩放
-            let scaleSize = getScaleSize(responseData.width, responseData.height, 320, 240)
+            let scaleSize = getScaleSize(responseData.width, responseData.height, 320, 800)
               //上传成功，将图片插入网页中。
               this.richtext.insertImage({
                 width: scaleSize.width,
@@ -193,11 +153,19 @@ export default class RichTextExample extends Component {
       this.RichTextToolbar.changeStyleModalWithFocus()
   }
 
+    _showPreviewArticleModal = () =>{
+
+      let titleHTML = this.richtext.getTitleHTML();
+      let contentHTML = this.richtext.getContentHTML();
+      this.PreviewArticleModal.showPreViewArticleModal(titleHTML, contentHTML)
+
+    }
 
   render() {
+
     return (
       <View style={[styles.container, { flexDirection: "column" }]}>
-        <ToolBarComponent />
+        <ToolBarComponent showPreviewArticleModal={this._showPreviewArticleModal}/>
         <RichTextEditor
           ref={r => (this.richtext = r)}
           style={styles.richText}
@@ -223,6 +191,10 @@ export default class RichTextExample extends Component {
           />
         ) : null}
         {Platform.OS === "ios" && <KeyboardSpacer />}
+        <View>
+
+          <PreviewArticleModal ref={(r) => (this.PreviewArticleModal = r)}/>
+        </View>
       </View>
     );
   }

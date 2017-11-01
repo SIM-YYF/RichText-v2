@@ -4378,9 +4378,8 @@
                     isFocusin = false;
 			        return;
 				}
-				zss_editor.debug('------------------selectionchange --------------------------')
 				if(onLongKeyDown){
-
+					return;
 				}else{
 
                     setTimeout(function() {
@@ -4389,7 +4388,7 @@
                         zss_editor.enabledEditingItems(e);
                         notifyIfSelectedTextHasChanged();//通知RN被选中的文本
 
-                    },500)
+                    },400)
 				}
 
 			});
@@ -4397,9 +4396,8 @@
             $(window).on('focusin', function (e) {
 
                 isFocusin = true;
-                zss_editor.debug('------------------focusin --------------------------')
                 if(onLongKeyDown){
-
+                    return;
                 }else{
                     setTimeout(function() {
                         zss_editor.calculateEditorHeightWithCaretPosition();
@@ -4415,38 +4413,19 @@
 
 
             $(window).on('focusout', function (e) {
-                zss_editor.debug('------------------focusout --------------------------')
-
 //                $('#zss_editor_content').html($('#zss_editor_content').innerHTML(' aaaaaaa'))
 //                document.getElementById("zss_editor_content").innerHTML = document.getElementById("zss_editor_content").innerHTML+' '
             });
-
-
 
 			var onLongKeyDown = false;
 			var onLongPressTimeOut;
 
 			var startY;
 			$(window).on('touchmove', function (e) { //手势滑动时，隐藏键盘
-				zss_editor.debug('============ touchmove')
 				clearTimeout(onLongPressTimeOut);
 //                e.preventDefault();
-
-                var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-                if (touch.pageY - startY > 20 || touch.pageY - startY < -20) {
-                    zss_editor.debug('-----------------------上划和下划')
-                    if(!onLongKeyDown){
-//                    zss_editor.keyboardHide();
-
-					}
-                }
-//                else  if(touch.pageX - startX > 20 || touch.pageX - startX < -20){
-//
-//                };
-
-
                 if(onLongKeyDown){//长按事件
-                    zss_editor.debug('=====touchmove======= onLongKeyDown; ' + onLongKeyDown)
+					return;
                 }else{
 //                    zss_editor.keyboardHide();
                     zss_editor.isDragging = true;
@@ -4458,17 +4437,14 @@
 
 			});
 			$(window).on('touchstart', function (e) {
-                zss_editor.debug('============ touchstart')
 //                e.preventDefault();
                 var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-//				startX = touch.changedTouches[0].pageX;
                 startY = touch.pageY;
 
 				//设置长按事件
                 onLongPressTimeOut = setTimeout(function() {
                     onLongKeyDown = true;
-                    zss_editor.debug('===touchstart========= onLongKeyDown ;' + onLongKeyDown)
-                }, 600);
+                }, 800);
 
                 zss_editor.isDragging = false;
 			});
@@ -4480,7 +4456,8 @@
             });
 
 			$(window).on('scroll', function (e) { //当HTML滚动时，通知WebView进行滚动
-				zss_editor.debug('============ scroll')
+
+				zss_editor.debug("::::::::::::::::::::   scroll");
 
 			});
 
@@ -5063,7 +5040,7 @@
 			zss_editor.enabledEditingItems();
 		}
 
-		zss_editor.quickLink = function () {
+        zss_editor.quickLink = function () {
 
 			var sel = document.getSelection();
 			var link_url = "";
@@ -5333,10 +5310,10 @@
 //				'</div>');
 //            imageContainer.find('#imga img').attr(attrs);
 
-            var deleteIcon = zss_editor.platform ==='ios'? '../img/icon_format_link@1.5x.png' : './icon_format_link@1.5x.png'
-            var html = '<div id="img_container" align="center" >' +
-				'<div style="position:relative; width:'+attrs.width+'px; height: '+attrs.height+'px;" >' +
-				'<a id="img_close" style=" position:absolute; right: -10px; top: -15px;"><img src="'+deleteIcon+'"></a>' +
+            var deleteIcon = zss_editor.platform ==='ios'? '../img/icon_delete_img@2x.png' : './icon_delete_img@2x.png'
+            var html = '<div id="img_container" align="left" style="background-color: transparent;">' +
+				'<div style="position:relative; left: -3px; width:'+attrs.width+'px; height: '+attrs.height+'px;" >' +
+				'<a id="img_close" style=" position:absolute; right: -10px; top: -15px;"><img style="width: 30px; height: 30px" src="'+deleteIcon+'"></a>' +
 				'<a id="imga" href="' + attrs.src + '"><img style=" width="'+attrs.width+'" height="'+attrs.height+'" src="'+attrs.src+ '"></a>' +
 				'' +
 				'</div></div>'
@@ -5344,7 +5321,7 @@
 
 //			zss_editor.debug(html)
 
-			zss_editor.insertHTML('<br>' +  html + '<br><br>');
+			zss_editor.insertHTML('<br><br>' +  html + '<br><br>');
 
 
 
@@ -5704,6 +5681,7 @@
 			max-height: 100%;
 			width: 100%;
 			max-width: 100%;
+			background-color: #F1F1F1;
 
 		}
 
@@ -5716,6 +5694,7 @@
 			-webkit-overflow-scrolling: touch;
 			/*overflow-y: scroll;*/
 			height: 98%;
+			width:96%;
 		}
 
 		img.zs_active {
@@ -5737,7 +5716,7 @@
 			font-family: Arial, Helvetica, sans-serif;
 			color: #000;
 			width: 98%;
-			height: 98%;
+			height: 96%;
             min-height:200px;
             /*padding: 10px;*/
 			/*-webkit-overflow-scrolling: touch;*/
@@ -5748,20 +5727,24 @@
 		#zss_editor_content {
 			/* padding-left: 10px;
 			padding-right: 10px; */
-
+			margin-left: 8px;
+			margin-right:8px;
 		}
 
 		div.zss_editor_title {
 			font-family: 'Helvetica Neue Light', sans-serif;
-			font-size: 23px;
+			font-size: 22px;
 			line-height: 31px;
-			color: #2d4150;
+			font-weight: bold;
+			color: #000000;
 		}
 
 		#zss_editor_title {
 			/* padding-left: 10px;
 			padding-right: 10px; */
-			margin-top: 20px
+			margin-top: 20px;
+			margin-left: 8px;
+			margin-right:8px;
 		}
 
 		[placeholder]:empty:before {
