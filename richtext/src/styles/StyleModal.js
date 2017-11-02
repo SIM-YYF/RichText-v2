@@ -11,10 +11,9 @@ import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
 import BaseComponent from '../BaseComponent'
 
 
+let showTimeout = 0;
 
-let  showTimeout = 0;
-class StyleModal extends  BaseComponent{
-
+class StyleModal extends BaseComponent {
 
 
     constructor(props) {
@@ -30,29 +29,29 @@ class StyleModal extends  BaseComponent{
     }
 
 
-
     _change_modal_state(isFocus) {
         //编辑内容重新获取焦点时，隐藏样式层
-        if(isFocus){
+        if (isFocus) {
             this.setState({
                 show: false
             });
             return;
         }
-        if(!this.state.show){
+        if (!this.state.show) {
             this.props.getEditor().blurContentEditor();
         }
 
 
-        showTimeout = setTimeout(()=>{
-            this.setState({
-                show: !this.state.show
-            });
+        showTimeout = setTimeout(() => {
+                this.setState({
+                    show: !this.state.show
+                });
+
         }, 200)
     }
 
-    hiddenModal(){
-        if(this.state.show){
+    hiddenModal() {
+        if (this.state.show) {
             this.setState({
                 show: false,
 
@@ -62,15 +61,15 @@ class StyleModal extends  BaseComponent{
     }
 
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearTimeout(showTimeout)
     }
 
     _selection_sytle(style) {
         RCTDeviceEventEmitter.emit('updateStyle', style);
-        this.setState({
-            show: !this.state.show
-        });
+        // this.setState({
+        //     show: true
+        // });
 
 
     }
@@ -94,7 +93,7 @@ class StyleModal extends  BaseComponent{
                             marginBottom: 0,
                             justifyContent: "center",
                             alignItems: "center",
-                            color:'#5c5c5c'
+                            color: '#5c5c5c'
                         }}
                     >
                         {rowData}
@@ -118,7 +117,7 @@ class StyleModal extends  BaseComponent{
         );
     }
 
-    renderView(){
+    renderView() {
         return (
             <View style={styles.container}>
 
@@ -137,9 +136,9 @@ class StyleModal extends  BaseComponent{
     }
 
     render() {
-        if(this.state.show){
+        if (this.state.show) {
             return this.renderView();
-        }else{
+        } else {
             return null;
         }
     }
@@ -149,10 +148,10 @@ class StyleModal extends  BaseComponent{
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#ECECF0",
-        height:180
+        height: 180
     },
     subView: {
-        flex:1,
+        flex: 1,
         marginLeft: 0,
         marginRight: 0,
         backgroundColor: "#fff",

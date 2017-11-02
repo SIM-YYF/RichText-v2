@@ -15,7 +15,7 @@ class ToolBarComponent extends Component {
 
     
   _ok_press = () => {
-    this.props.showPreviewArticleModal();
+    // this.props.showPreviewArticleModal();
   };
 
   render() {
@@ -63,13 +63,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#DDDDDD"
+    backgroundColor: "#3EABF5"
   },
 
   title_container: {
     width: 100,
 
-    backgroundColor: "#DDDDDD",
+    backgroundColor: "#3EABF5",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center"
@@ -78,7 +78,8 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontSize: 15,
-    fontStyle: "italic"
+    fontStyle: "italic",
+      color:'#FFFFFF'
   },
 
   radius_btn: {

@@ -4834,24 +4834,52 @@
 
 		//正文设置
 		zss_editor.setZWing = function (zwing) {
-			document.execCommand('formatBlock', false, "<p>");
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+            zss_editor.debug('============== setZWing ======' + t);
+			if(t == 'div'){
+			    return;
+			}else if(t == 'li'){
+                document.execCommand('insertUnorderedList', false, null);
+			}else if(t == 'span'){
+			document.execCommand('formatBlock', false, "<div>");
+			}
+
+            var c = current_selection.html();
+            current_selection.replaceWith(c);
+
+//			document.execCommand('formatBlock', false, "<p>");
 			zss_editor.enabledEditingItems();
-            zss_editor.blurContentEditor();
+//            zss_editor.blurContentEditor();
 		}
 
 		zss_editor.setHeading = function (heading) {
 			var current_selection = $(zss_editor.getSelectedNode());
 			var t = current_selection.prop("tagName").toLowerCase();
+            zss_editor.debug(':::::::::::::::: tagName' + t)
 			var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
 			if (is_heading && heading == t) {
-				var c = current_selection.html();
-				current_selection.replaceWith(c);
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+
 			} else {
-				document.execCommand('formatBlock', false, '<' + heading + '>');
+			    if(t == 'li'){
+                    document.execCommand('insertUnorderedList', false, null);
+                    var c = current_selection.html();
+                    current_selection.replaceWith(c);
+				}else if(t == 'ul'){
+                    document.execCommand('insertOrderedList', false, null);
+//
+				}
+
+
+
+                document.execCommand('formatBlock', false, '<' + heading + '>');
 			}
 
+
 			zss_editor.enabledEditingItems();
-            zss_editor.blurContentEditor();
+//            zss_editor.blurContentEditor();
 		}
 
 		zss_editor.setParagraph = function () {
@@ -4883,14 +4911,39 @@
 		}
 
 		zss_editor.setOrderedList = function () {
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+//            if (is_heading || t == 'div' || t == 'span') {
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+//
+//            }
+            document.execCommand('formatBlock', false, '<div>');
+//            var c = current_selection.html();
+//            current_selection.replaceWith(c);
+
 			document.execCommand('insertOrderedList', false, null);
 			zss_editor.enabledEditingItems();
 		}
 
 		zss_editor.setUnorderedList = function () {
-			document.execCommand('insertUnorderedList', false, null);
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+            zss_editor.debug(':::::::::::::::: setUnorderedList  > tagName' + t)
+			if(t == 'li'){
+                return;
+			}
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+            if (is_heading || t == 'div' || t == 'span') {
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+                document.execCommand('formatBlock', false, '<div>');
+            }
+            document.execCommand('insertUnorderedList', false, null);
+
 			zss_editor.enabledEditingItems();
-            zss_editor.blurContentEditor();
+//            zss_editor.blurContentEditor();
 		}
 
 		zss_editor.setJustifyCenter = function () {
@@ -5223,31 +5276,24 @@
 
         }
 
-
         //插入音频
         zss_editor.insertAudio = function (attributes) {
-            zss_editor.debug("insert audio  = " + attributes);
-
-//            var attr = attributes;
-            // attr.id = "audio";
-//            var audioContainer = $('<div><a id="audio" href="' + attributes.audio + '"><img></a></div>');
-
-            var audioContainer = $('<div align="center"><div align="center">'+
-                '<audio  controls>' +
-                '<source src="'+attributes.audio+'"/>' +
-                '</audio>' +
-				'</div></div>'
-
-                );
-
-            var audioHTML = '<div align="center">'+
-                '<audio  controls>' +
-                '<source src="'+attributes.audio+'"/>' +
-                '</audio>' +
+            var deleteIcon = zss_editor.platform ==='ios'? '../img/icon_audio_cover_delete@2x.png' : './icon_audio_cover_delete@2x.png'
+            var audioHTML =  '<div id="audio_container" align="center" style="background-color:transparent;">' +
+					'<div style="position:relative;" >' +
+						'<a id="audio" >' +
+							'<audio  controls>' +
+								'<source src="'+attributes.audio+'"/>' +
+							'</audio>' +
+						'</a>' +
+						 '<a id="audio_close" style=" position:absolute; right: 20px; top: 25px;"><img style="width: 36px; height: 36px" src="'+deleteIcon+'"></a>' +
+					'</div>' +
+                	'' +
                 '</div>';
-//            audioContainer.find('img').attr(attr);
 
-            zss_editor.insertHTML('<br>' + audioHTML+ '<br>');
+
+
+            zss_editor.insertHTML('<br><br>' + audioHTML+ '<br><br>');
 
 
 
@@ -5288,6 +5334,14 @@
 					//移除整个父元素
 					img_container.remove();
 				    return;
+				}
+
+				if(anchor.attr('id') === 'audio_close'){
+                    //获取顶层的父元素
+                    var audio_container = anchor.parent().parent();
+                    //移除整个父元素
+                    audio_container.remove();
+                    return;
 				}
 
 				WebViewBridge.send(JSON.stringify({

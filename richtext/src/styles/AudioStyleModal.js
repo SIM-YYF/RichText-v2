@@ -193,7 +193,7 @@ class AudioStyleModal extends Component {
     renderCircle() {
         let circleViews = []
         for (let i = 0; i < 6; i++) {
-            circleViews.push(<View style={styles.circle}/>)
+            circleViews.push(<View key={i} style={styles.circle}/>)
         }
         return circleViews;
 

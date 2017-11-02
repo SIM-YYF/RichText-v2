@@ -149,7 +149,9 @@ export default class RichTextExample extends Component {
   }
 
   _changeActionBoxState = (show) => {
+
       this.setState({ show: show })
+
       this.RichTextToolbar.changeStyleModalWithFocus()
   }
 

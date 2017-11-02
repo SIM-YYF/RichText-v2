@@ -159,8 +159,7 @@ export default class RichTextToolbar extends BaseComponent {
                         renderRow={row => this._renderAction(row.action, row.selected, row.index)}
                         showsHorizontalScrollIndicator={false}
                     />
-                    <Image style={{height: 70, width: 24, position: 'absolute', right: 0}}
-                           source={require('../img/icon_scroll_hint.png')}/>
+                    <Image style={{height: 70, width: 24, position: 'absolute', right: -5}} source={require('../img/icon_scroll_hint.png')}/>
 
                 </View>
 
@@ -185,7 +184,6 @@ export default class RichTextToolbar extends BaseComponent {
     }
 
     _onPress = (action) => {
-        console.log('_onPress:::::::')
 
         switch (action) {
             case actions.insertImage: //在插入点插入一张图片（删除选中的部分）

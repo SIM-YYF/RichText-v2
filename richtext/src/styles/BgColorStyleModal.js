@@ -73,9 +73,7 @@ class ColorStyleModal extends BaseComponent {
 //   选中对应的样式，通知编译器组件更新样式
     _selection_sytle(color) {
         RCTDeviceEventEmitter.emit('updateColor', {'udpateColorType': this.state.udpateColorType, 'color': color});
-        this.setState({
-            show: false
-        });
+
     }
 
     //返回cell的方法
