@@ -14,6 +14,7 @@ export default class BaseComponent extends Component {
     constructor(props) {
         super(props);
 
+        //keyboardDidShow   keyboardDidHide
         const updateListener = Platform.OS === 'android' ? 'keyboardDidShow' : 'keyboardWillShow';
         const resetListener = Platform.OS === 'android' ? 'keyboardDidHide' : 'keyboardWillHide';
         this._listeners = [

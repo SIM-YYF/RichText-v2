@@ -68,7 +68,6 @@ export default class RichTextToolbar extends BaseComponent {
 
         const actions = this.props.actions ? this.props.actions : defaultActions;
         this.state = {
-            styleModalShow: false,
             editor: undefined,
             actions,
             ds: new ListView.DataSource({
@@ -259,6 +258,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#C1C1C1',
         borderTopWidth: 0.8,
         borderBottomWidth: 0.8,
+
     },
 
     diff_icons_container: {

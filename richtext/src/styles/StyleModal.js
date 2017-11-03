@@ -11,7 +11,6 @@ import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
 import BaseComponent from '../BaseComponent'
 
 
-let showTimeout = 0;
 
 class StyleModal extends BaseComponent {
 
@@ -23,6 +22,7 @@ class StyleModal extends BaseComponent {
         });
 
         this.state = {
+            currentSelection:null,
             show: false,
             dataSource: ds.cloneWithRows(["正文", "一级标题 (大)", "二级标题 (中)", "三级标题 (小)", "列表"])
         };
@@ -32,29 +32,29 @@ class StyleModal extends BaseComponent {
     _change_modal_state(isFocus) {
         //编辑内容重新获取焦点时，隐藏样式层
         if (isFocus) {
-            this.setState({
-                show: false
-            });
+            if(this.state.currentSelection === null){
+                this.setState({
+                    show: false
+                });
+            }
             return;
         }
         if (!this.state.show) {
-            this.props.getEditor().blurContentEditor();
+            this.props.getEditor().blurContentEditor(); //强制隐藏键盘
         }
 
-
-        showTimeout = setTimeout(() => {
+        this.showTimeout = setTimeout(() => {
                 this.setState({
                     show: !this.state.show
                 });
-
-        }, 200)
+        }, 300)
     }
 
     hiddenModal() {
         if (this.state.show) {
             this.setState({
                 show: false,
-
+                currentSelection: null
             });
         }
 
@@ -62,16 +62,29 @@ class StyleModal extends BaseComponent {
 
 
     componentWillUnmount() {
-        clearTimeout(showTimeout)
+        clearTimeout(this.showTimeout)
     }
 
     _selection_sytle(style) {
+        this.setState({
+            currentSelection: style
+        });
+
         RCTDeviceEventEmitter.emit('updateStyle', style);
         // this.setState({
         //     show: true
         // });
 
 
+    }
+
+    keyboardWillShow(event){
+        if (this.state.show) {
+            this.setState({
+                show: false,
+                currentSelection: null
+            });
+        }
     }
 
 

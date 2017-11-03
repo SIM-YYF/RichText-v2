@@ -4339,6 +4339,7 @@
 			});
 		}
 
+
 		function clearHtmlIfTextIsEmpty(editorId) {
 			var $editor = $('#' + editorId);
 
@@ -4395,6 +4396,8 @@
 
             $(window).on('focusin', function (e) {
 
+
+
                 isFocusin = true;
                 if(onLongKeyDown){
                     return;
@@ -4438,6 +4441,9 @@
 			});
 			$(window).on('touchstart', function (e) {
 //                e.preventDefault();
+
+//                zss_editor.contentResFocusHandler();
+
                 var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
                 startY = touch.pageY;
 
@@ -4653,10 +4659,10 @@
             // var maxOffsetY = footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight;
             var maxOffsetY = footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight;
 
-            zss_editor.debug("------------------  updateOffset -------------")
-            zss_editor.debug("------------------  footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight -------------" + footer.offsetTop + '+' + footer.offsetHeight + '-' + zss_editor.editorHeight)
-            zss_editor.debug("------------------  offsetY -------------" + offsetY)
-            zss_editor.debug("------------------  maxOffsetY -------------" + maxOffsetY)
+//            zss_editor.debug("------------------  updateOffset -------------")
+//            zss_editor.debug("------------------  footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight -------------" + footer.offsetTop + '+' + footer.offsetHeight + '-' + zss_editor.editorHeight)
+//            zss_editor.debug("------------------  offsetY -------------" + offsetY)
+//            zss_editor.debug("------------------  maxOffsetY -------------" + maxOffsetY)
             if (maxOffsetY < 0)
                 maxOffsetY = 0;
 
@@ -4678,8 +4684,8 @@
 			var newPos;
 
 
-			 zss_editor.debug('======== caretYPosition = ' + caretYPosition)
-			 zss_editor.debug('======== offsetY = ' + offsetY)
+//			 zss_editor.debug('======== caretYPosition = ' + caretYPosition)
+//			 zss_editor.debug('======== offsetY = ' + offsetY)
 
 			var futureEditorHeight = caretYPosition + lineHeight;
 
@@ -4690,14 +4696,14 @@
 
 			if (caretYPosition < offsetY) {
 				newPos = caretYPosition;
-                zss_editor.debug('========if ---- caretYPosition < offsetY （caretYPosition = newPos）= ' + newPos)
+//                zss_editor.debug('========if ---- caretYPosition < offsetY （caretYPosition = newPos）= ' + newPos)
 			} else if (futureEditorHeight > editorHeight + offsetY) {
 
 //				newPos = futureEditorHeight - editorHeight + halfLineHeight + 40;
                 newPos = caretYPosition - halfLineHeight - 40;
-                zss_editor.debug('======== futureEditorHeight = ' + futureEditorHeight)
-                zss_editor.debug('======== halfLineHeight = ' + halfLineHeight)
-                zss_editor.debug('======== else if ---- futureEditorHeight - editorHeight + halfLineHeight =  newPos = ' + newPos)
+//                zss_editor.debug('======== futureEditorHeight = ' + futureEditorHeight)
+//                zss_editor.debug('======== halfLineHeight = ' + halfLineHeight)
+//                zss_editor.debug('======== else if ---- futureEditorHeight - editorHeight + halfLineHeight =  newPos = ' + newPos)
 			} else {
 
 			    if(caretYPosition < editorHeight){
@@ -4710,7 +4716,7 @@
 			}
 			if (newPos) {
 
-				zss_editor.debug('========&&&&&&&&&&&&&&& scrollTo if  newPos = ' + (newPos))
+//				zss_editor.debug('========&&&&&&&&&&&&&&& scrollTo if  newPos = ' + (newPos))
 				window.scrollTo(0, (newPos));
 
 
@@ -4837,16 +4843,30 @@
             var current_selection = $(zss_editor.getSelectedNode());
             var t = current_selection.prop("tagName").toLowerCase();
             zss_editor.debug('============== setZWing ======' + t);
-			if(t == 'div'){
-			    return;
+
+//            var c = current_selection.html();
+//            current_selection.replaceWith(c);
+
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+            if (is_heading) {
+
+                document.execCommand('formatBlock', false, "<div>");
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+
+            }else if(t == 'div'){
+
 			}else if(t == 'li'){
                 document.execCommand('insertUnorderedList', false, null);
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+                document.execCommand('formatBlock', false, "<div>");
 			}else if(t == 'span'){
-			document.execCommand('formatBlock', false, "<div>");
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+                document.execCommand('formatBlock', false, "<div>");
 			}
 
-            var c = current_selection.html();
-            current_selection.replaceWith(c);
 
 //			document.execCommand('formatBlock', false, "<p>");
 			zss_editor.enabledEditingItems();
@@ -4857,6 +4877,8 @@
 			var current_selection = $(zss_editor.getSelectedNode());
 			var t = current_selection.prop("tagName").toLowerCase();
             zss_editor.debug(':::::::::::::::: tagName' + t)
+
+
 			var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
 			if (is_heading && heading == t) {
                 var c = current_selection.html();
@@ -4865,11 +4887,18 @@
 			} else {
 			    if(t == 'li'){
                     document.execCommand('insertUnorderedList', false, null);
+//                    document.execCommand('formatBlock', false, '<div>');
                     var c = current_selection.html();
                     current_selection.replaceWith(c);
 				}else if(t == 'ul'){
                     document.execCommand('insertOrderedList', false, null);
-//
+//                    document.execCommand('formatBlock', false, '<div>');
+                    var c = current_selection.html();
+                    current_selection.replaceWith(c);
+				}else if(t == 'span'){
+                    var c = current_selection.html();
+                    current_selection.replaceWith(c);
+//                    document.execCommand('formatBlock', false, '<div>');
 				}
 
 
@@ -4931,15 +4960,13 @@
             var current_selection = $(zss_editor.getSelectedNode());
             var t = current_selection.prop("tagName").toLowerCase();
             zss_editor.debug(':::::::::::::::: setUnorderedList  > tagName' + t)
-			if(t == 'li'){
-                return;
-			}
+
             var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
-            if (is_heading || t == 'div' || t == 'span') {
+            if (is_heading || t == 'span') {
                 var c = current_selection.html();
                 current_selection.replaceWith(c);
-                document.execCommand('formatBlock', false, '<div>');
             }
+
             document.execCommand('insertUnorderedList', false, null);
 
 			zss_editor.enabledEditingItems();
@@ -5700,6 +5727,13 @@
 				}))
 			});
 		}
+        zss_editor.contentResFocusHandler = function () {
+            addFocusEvent('zss_editor_content', function () {
+                WebViewBridge.send(JSON.stringify({
+                    type: 'CONTENT_RES_FOCUSED'
+                }))
+            });
+        }
 
 		zss_editor.setEditorHeight = function (editorHeight) {
 			zss_editor.editorHeight = editorHeight;

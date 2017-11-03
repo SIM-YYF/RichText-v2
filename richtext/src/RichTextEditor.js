@@ -335,13 +335,20 @@ export default class RichTextEditor extends Component {
                     // this.props.changeActionBoxState(false);
                     break;
                 case messages.TITLE_FOCUSED: //标题获取焦点
-                    this.titleFocusHandler && this.titleFocusHandler();
+                    // this.titleFocusHandler && this.titleFocusHandler();
                     this.props.changeActionBoxState(false); //隐藏底部操作栏
                     break;
                 case messages.CONTENT_FOCUSED: //内容获取焦点
-                    this.contentFocusHandler && this.contentFocusHandler();
+                    // this.contentFocusHandler && this.contentFocusHandler();
                     this.props.changeActionBoxState(true);//显示底部操作栏
                     break;
+                case messages.CONTENT_RES_FOCUSED: //内容重新获取焦点
+                    // this.contentFocusHandler && this.contentFocusHandler();
+                    this.props.changeActionBoxState(true);//显示底部操作栏
+                    this.props.contentResForcusHandler(); //底部操作栏显示的列表隐藏
+
+                    break;
+
                 case messages.SELECTION_CHANGE: { //发送消息给RN，告知当前选中的内容样式类型
                     // const items = message.data.items;
                     // this.state.selectionChangeListeners.map(listener => {
