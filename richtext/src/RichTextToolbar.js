@@ -124,13 +124,13 @@ export default class RichTextToolbar extends BaseComponent {
             borderStyle: "solid",
             borderColor: 'transparent',
         }
-        const diff_icons_style = index > 2 ? (index === 3 ? [styles.diff_icons_container, border_left_style] : [styles.diff_icons_container, {backgroundColor: '#f2faff'}]) : (styles.diff_icons_container);
+        // const diff_icons_style = index > 2 ? (index === 3 ? [styles.diff_icons_container, border_left_style] : [styles.diff_icons_container, {backgroundColor: '#f2faff'}]) : (styles.diff_icons_container);
 
 
         return (
 
 
-            <View style={diff_icons_style}>
+            <View style={styles.diff_icons_container}>
                 <TouchableOpacity onPress={() => {
                     this._onPress(action)
                 }}>
@@ -146,10 +146,11 @@ export default class RichTextToolbar extends BaseComponent {
 
     render() {
         return (
-            <View>
+            <View >
                 <View style={styles.style_listView_container}>
 
                     <ListView
+
                         horizontal
                         contentContainerStyle={{
                             flexDirection: "row",
@@ -252,12 +253,12 @@ const styles = StyleSheet.create({
 
 
     style_listView_container: {
-        backgroundColor: "#FFFFFF",
+        // backgroundColor: "#FFFFFF",
         flexDirection: "row",
         borderTopColor: '#C1C1C1',
         borderBottomColor: '#C1C1C1',
-        borderTopWidth: 0.8,
-        borderBottomWidth: 0.8,
+        borderTopWidth: 1,
+        borderBottomWidth: 1,
 
     },
 
@@ -265,6 +266,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor:'#ffffff',
     },
 
     listView_item_container: {
@@ -274,12 +276,14 @@ const styles = StyleSheet.create({
         marginBottom:8,
         marginLeft:10,
         marginRight:10,
+
     },
     listView_item_icon: {
         justifyContent: "center",
         alignItems: "center",
         height: 20,
         width: 20,
+
     },
     listView_item_text: {
         textAlign: "center",

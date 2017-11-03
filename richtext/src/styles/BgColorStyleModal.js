@@ -6,12 +6,13 @@ import {
     TouchableHighlight,
     ListView,
     Dimensions,
-    Image
+    Image,
+    Platform
 } from "react-native";
 import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter'
 import BaseComponent from '../BaseComponent'
 
-let showTimeout = 0;
+
 
 const bgColorStyles = [
     {icon: require("../../img/bgcolor_d3f3bb_green.png"), text: "绿色", color:'#d3f3bb'},
@@ -47,9 +48,9 @@ class ColorStyleModal extends BaseComponent {
             return;
         }
         if (!this.state.show) {
-            this.props.getEditor().blurContentEditor();
+            Platform.OS === 'android' ? this.props.getEditor().blurContentEditor() : null; //在android下强制隐藏键盘
         }
-        showTimeout = setTimeout(() => {
+        this.showTimeout = setTimeout(() => {
             this.setState({
                 show: !this.state.show,
                 udpateColorType: type
@@ -67,7 +68,7 @@ class ColorStyleModal extends BaseComponent {
     }
 
     componentWillUnmount() {
-        clearTimeout(showTimeout)
+        clearTimeout(this.showTimeout)
     }
 
 //   选中对应的样式，通知编译器组件更新样式

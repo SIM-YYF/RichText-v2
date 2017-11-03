@@ -75,7 +75,7 @@ class AudioStyleModal extends Component {
             return;
         }
         if (!this.state.show) {
-            this.props.getEditor().blurContentEditor();
+            Platform.OS === 'android' ? this.props.getEditor().blurContentEditor() : null; //在android下强制隐藏键盘
         }
         this.stopRecord()
 

@@ -4835,25 +4835,58 @@
 		}
 
 
-		//正文设置
-		zss_editor.setZWing = function (zwing) {
-			document.execCommand('formatBlock', false, "<p>");
-			zss_editor.enabledEditingItems();
-		}
+        //正文设置
+        zss_editor.setZWing = function (zwing) {
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+            if (is_heading) {
+                document.execCommand('formatBlock', false, "<div>");
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+            }else if(t == 'div'){
 
-		zss_editor.setHeading = function (heading) {
-			var current_selection = $(zss_editor.getSelectedNode());
-			var t = current_selection.prop("tagName").toLowerCase();
-			var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
-			if (is_heading && heading == t) {
-				var c = current_selection.html();
-				current_selection.replaceWith(c);
-			} else {
-				document.execCommand('formatBlock', false, '<' + heading + '>');
-			}
+            }else if(t == 'li'){
+                document.execCommand('insertUnorderedList', false, null);
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+                document.execCommand('formatBlock', false, "<div>");
+            }else if(t == 'span'){
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+                document.execCommand('formatBlock', false, "<div>");
+            }
+            zss_editor.enabledEditingItems();
+        }
 
-			zss_editor.enabledEditingItems();
-		}
+        zss_editor.setHeading = function (heading) {
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+            if (is_heading && heading == t) {
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+            } else {
+                if(t == 'li'){
+                    document.execCommand('insertUnorderedList', false, null);
+//                    document.execCommand('formatBlock', false, '<div>');
+                    var c = current_selection.html();
+                    current_selection.replaceWith(c);
+                }else if(t == 'ul'){
+                    document.execCommand('insertOrderedList', false, null);
+//                    document.execCommand('formatBlock', false, '<div>');
+                    var c = current_selection.html();
+                    current_selection.replaceWith(c);
+                }else if(t == 'span'){
+                    var c = current_selection.html();
+                    current_selection.replaceWith(c);
+//                    document.execCommand('formatBlock', false, '<div>');
+                }
+                document.execCommand('formatBlock', false, '<' + heading + '>');
+            }
+            zss_editor.enabledEditingItems();
+        }
 
 		zss_editor.setParagraph = function () {
 			var current_selection = $(zss_editor.getSelectedNode());
@@ -4887,10 +4920,17 @@
 			zss_editor.enabledEditingItems();
 		}
 
-		zss_editor.setUnorderedList = function () {
-			document.execCommand('insertUnorderedList', false, null);
-			zss_editor.enabledEditingItems();
-		}
+        zss_editor.setUnorderedList = function () {
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+            if (is_heading || t == 'span') {
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+            }
+            document.execCommand('insertUnorderedList', false, null);
+            zss_editor.enabledEditingItems();
+        }
 
 		zss_editor.setJustifyCenter = function () {
 			document.execCommand('justifyCenter', false, null);
@@ -5675,18 +5715,15 @@
             color:#2d4150;
             height: 100%;
             max-height: 100%;
-            width: 100%;
-            max-width: 100%;
+            width: 98%;
+            max-width: 98%;
         }
 
         body {
-            padding-left:0px;
-            padding-right:0px;
-            padding-top: 0px;
-            padding-bottom: 0px;
+
             overflow-y: scroll;
             -webkit-overflow-scrolling: touch;
-            height: 98%;
+            height: 100%;
         }
 
 		img.zs_active {
@@ -5694,7 +5731,7 @@
 		}
 
 		img {
-			max-width: 98%;
+			max-width: 100%;
 			margin-left: auto;
 			margin-right: auto;
 			display: block;
@@ -5707,8 +5744,8 @@
 		div.zss_editor_content {
 			font-family: Arial, Helvetica, sans-serif;
 			color: #000;
-			width: 98%;
-			height: 98%;
+			width: 100%;
+			height: 100%;
             -webkit-overflow-scrolling: touch;
             overflow:auto;
 
@@ -5716,22 +5753,27 @@
 		}
 
 		#zss_editor_content {
-			/* padding-left: 10px;
-			padding-right: 10px; */
+			margin-left: 10px;
+			margin-right:10px;
 
 		}
 
 		div.zss_editor_title {
+
 			font-family: 'Helvetica Neue Light', sans-serif;
-			font-size: 23px;
+			font-size: 22px;
 			line-height: 31px;
-			color: #2d4150;
+			font-weight: bold;
+			color: #000000;
+
 		}
 
 		#zss_editor_title {
 			/* padding-left: 10px;
 			padding-right: 10px; */
-			margin-top: 20px
+			margin-top: 20px;
+			margin-left: 10px;
+			margin-right:10px;
 		}
 
 		[placeholder]:empty:before {
@@ -5813,15 +5855,15 @@
 <body>
 	<!-- ZSSRichTextEditor Editable Content -->
 
-    <div id="zss_editor_container">
-         <div id="zss_editor_cover" class="cover">
+    <!--<div id="zss_editor_container">-->
+         <!--<div id="zss_editor_cover" class="cover">-->
 
-             <div id="zss_editor_cover_add" class="bor" placeholder="">
-                <button id="btn_add_cover" class="btn_add_cover"> + add cover</button>
-             </div>
+             <!--<div id="zss_editor_cover_add" class="bor" placeholder="">-->
+                <!--<button id="btn_add_cover" class="btn_add_cover"> + add cover</button>-->
+             <!--</div>-->
 
-         </div>
-    </div>
+         <!--</div>-->
+    <!--</div>-->
 
 
 	<div id="zss_editor_title" class="zss_editor_title" contenteditable="true" placeholder="" disableLineBreaks="true"></div>

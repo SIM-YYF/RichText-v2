@@ -6,6 +6,7 @@ import {
     TouchableHighlight,
     ListView,
     Dimensions,
+    Platform
 } from "react-native";
 import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
 import BaseComponent from '../BaseComponent'
@@ -40,7 +41,7 @@ class StyleModal extends BaseComponent {
             return;
         }
         if (!this.state.show) {
-            this.props.getEditor().blurContentEditor(); //强制隐藏键盘
+            Platform.OS === 'android' ? this.props.getEditor().blurContentEditor() : null; //强制隐藏键盘
         }
 
         this.showTimeout = setTimeout(() => {

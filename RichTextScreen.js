@@ -72,7 +72,7 @@ export default class RichTextScreen extends Component {
 
 
     //向编辑器插入图片
-    _onPressAddImage() {
+    _onPressAddImage2() {
 
         ImagePicker.openPicker({
             width: 540,
@@ -108,6 +108,51 @@ export default class RichTextScreen extends Component {
             })
             .catch(e => {
                 alert("未选中图片或图片格式不对")
+            });
+    }
+
+    _onPressAddImage() {
+
+        ImagePicker.openPicker({
+            // width: 540,
+            // height: 480,
+            mediaType:"photo",
+            cropping: true,
+            showCropGuidelines:false,
+            cropperCircleOverlay: false,
+            cropperTintColor:'#03A9F4',
+            includeExif:true,
+            enableRotationGesture:false,
+            hideBottomControls:true,
+            cropperTintColor:'red',
+            // compressImageMaxWidth: 540,
+            // compressImageMaxHeight: 480,
+            compressImageQuality: 0.5,
+            compressVideoPreset: "MediumQuality"
+        })
+            .then(image => {
+                upload_url = 'https://cfs-demo.ykbenefit.com/chat/zrk/upload';//demo测试
+                upload_urlD = 'https://cfs-dev.ykbenefit.com/chat/zrk/upload';//开发
+
+                let files = {uri: image.path, type: 'application/octet-stream', name: getFileNameFromFileURL(image.path)};
+                let formData = new FormData();
+                console.log(files)
+                formData.append('file', files);
+                uploadFile(upload_urlD, formData).then(responseData => {
+                    //等比缩放
+                    let scaleSize = getScaleSize(responseData.width, responseData.height, 320, 800)
+                    //上传成功，将图片插入网页中。
+                    this.richtext.insertImage({
+                        width: scaleSize.width,
+                        height:scaleSize.height,
+                        src: responseData.url,
+                    });
+                }).catch(error => {
+                    alert("上传图片失败")
+                })
+            })
+            .catch(e => {
+                alert("未选中图片或图片格式不对" + e)
             });
     }
 
@@ -222,8 +267,8 @@ export default class RichTextScreen extends Component {
                         ref={(r) => (this.RichTextToolbar = r)}
                         getEditor={() => this.richtext} //挂载工具栏到编译器上的回调
                         selectedIconTint= "#cecece"
-                        iconTint="#000" //工具类中每个样式按钮的颜色值
-                        selectedButtonStyle={{ backgroundColor: "#fff" }} // 每个样式按钮选中之后的样式
+                        // iconTint="#000" //工具类中每个样式按钮的颜色值
+                        // selectedButtonStyle={{ backgroundColor: "#fff" }} // 每个样式按钮选中之后的样式
                         onPressAddLink={() => this._onPressAddLink()}
                         onPressAddImage={() => this._onPressAddImage()}
                         setBackgroundColor={() => this._setBackgroundColor()}
@@ -264,7 +309,6 @@ export default class RichTextScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: Platform.OS === "ios" ? 20 : 0,
         backgroundColor: "#ffffff"
     },
     richText: {

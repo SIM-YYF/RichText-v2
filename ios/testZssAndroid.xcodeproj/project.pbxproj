@@ -13,12 +13,10 @@
 		00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302DC1ABCB9D200DB3ED1 /* libRCTNetwork.a */; };
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* testZssAndroidTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* testZssAndroidTests.m */; };
-		04179D6C1F7509A3007009C8 /* ImageCropPickerSDK in Resources */ = {isa = PBXBuildFile; fileRef = 04179D6B1F7509A3007009C8 /* ImageCropPickerSDK */; };
 		04179D6E1F7509D8007009C8 /* RSKImageCropper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04179D6D1F7509D8007009C8 /* RSKImageCropper.framework */; };
 		04179D6F1F7509D8007009C8 /* RSKImageCropper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 04179D6D1F7509D8007009C8 /* RSKImageCropper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		04179D721F7509DD007009C8 /* QBImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 04179D711F7509DD007009C8 /* QBImagePicker.framework */; };
 		04179D731F7509DD007009C8 /* QBImagePicker.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 04179D711F7509DD007009C8 /* QBImagePicker.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		04179D7E1F75110F007009C8 /* libReact-Native-Webview-Bridge.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04179D7D1F751101007009C8 /* libReact-Native-Webview-Bridge.a */; };
 		048ABB001F905D0500A622B5 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 048ABAFE1F905CF000A622B5 /* libReactNativePermissions.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
@@ -128,9 +126,9 @@
 			remoteGlobalIDString = 3D383D621EBD27B9005632C8;
 			remoteInfo = "double-conversion-tvOS";
 		};
-		04179D7C1F751101007009C8 /* PBXContainerItemProxy */ = {
+		0429321A1FAC604A0013CF0F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 04179D781F751101007009C8 /* React-Native-Webview-Bridge.xcodeproj */;
+			containerPortal = 042932161FAC604A0013CF0F /* React-Native-Webview-Bridge.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 4114DC4C1C187C3A003CD988;
 			remoteInfo = "React-Native-Webview-Bridge";
@@ -358,10 +356,10 @@
 		00E356EE1AD99517003FC87E /* testZssAndroidTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = testZssAndroidTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* testZssAndroidTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = testZssAndroidTests.m; sourceTree = "<group>"; };
-		04179D6B1F7509A3007009C8 /* ImageCropPickerSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImageCropPickerSDK; path = "../../lib/react-native-image-crop-picker/ios/ImageCropPickerSDK"; sourceTree = "<group>"; };
 		04179D6D1F7509D8007009C8 /* RSKImageCropper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RSKImageCropper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		04179D711F7509DD007009C8 /* QBImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		04179D781F751101007009C8 /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../../lib/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
+		042932161FAC604A0013CF0F /* React-Native-Webview-Bridge.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "React-Native-Webview-Bridge.xcodeproj"; path = "../node_modules/react-native-webview-bridge/ios/React-Native-Webview-Bridge.xcodeproj"; sourceTree = "<group>"; };
+		0429321E1FAC63050013CF0F /* ImageCropPickerSDK */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImageCropPickerSDK; path = "../node_modules/react-native-image-crop-picker/ios/ImageCropPickerSDK"; sourceTree = "<group>"; };
 		048ABAF91F905CF000A622B5 /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
 		139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTWebSocket.xcodeproj; path = "../node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj"; sourceTree = "<group>"; };
@@ -403,7 +401,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				048ABB001F905D0500A622B5 /* libReactNativePermissions.a in Frameworks */,
-				04179D7E1F75110F007009C8 /* libReact-Native-Webview-Bridge.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				04179D6E1F7509D8007009C8 /* RSKImageCropper.framework in Frameworks */,
@@ -529,10 +526,10 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		04179D791F751101007009C8 /* Products */ = {
+		042932171FAC604A0013CF0F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				04179D7D1F751101007009C8 /* libReact-Native-Webview-Bridge.a */,
+				0429321B1FAC604A0013CF0F /* libReact-Native-Webview-Bridge.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -649,8 +646,8 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				042932161FAC604A0013CF0F /* React-Native-Webview-Bridge.xcodeproj */,
 				048ABAF91F905CF000A622B5 /* ReactNativePermissions.xcodeproj */,
-				04179D781F751101007009C8 /* React-Native-Webview-Bridge.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -683,9 +680,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				0429321E1FAC63050013CF0F /* ImageCropPickerSDK */,
 				04179D711F7509DD007009C8 /* QBImagePicker.framework */,
 				04179D6D1F7509D8007009C8 /* RSKImageCropper.framework */,
-				04179D6B1F7509A3007009C8 /* ImageCropPickerSDK */,
 				13B07FAE1A68108700A75B9A /* testZssAndroid */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* testZssAndroidTests */,
@@ -884,8 +881,8 @@
 					ProjectRef = 139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */;
 				},
 				{
-					ProductGroup = 04179D791F751101007009C8 /* Products */;
-					ProjectRef = 04179D781F751101007009C8 /* React-Native-Webview-Bridge.xcodeproj */;
+					ProductGroup = 042932171FAC604A0013CF0F /* Products */;
+					ProjectRef = 042932161FAC604A0013CF0F /* React-Native-Webview-Bridge.xcodeproj */;
 				},
 				{
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
@@ -989,11 +986,11 @@
 			remoteRef = 04179D671F7503EB007009C8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		04179D7D1F751101007009C8 /* libReact-Native-Webview-Bridge.a */ = {
+		0429321B1FAC604A0013CF0F /* libReact-Native-Webview-Bridge.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
 			path = "libReact-Native-Webview-Bridge.a";
-			remoteRef = 04179D7C1F751101007009C8 /* PBXContainerItemProxy */;
+			remoteRef = 0429321A1FAC604A0013CF0F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		043C98E81F73AB54006F61A8 /* libRCTBlob-tvOS.a */ = {
@@ -1200,7 +1197,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				04179D6C1F7509A3007009C8 /* ImageCropPickerSDK in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
