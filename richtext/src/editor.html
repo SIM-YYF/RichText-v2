@@ -4261,6 +4261,8 @@
 
 		// Sets to true when extra footer gap shows and requires to hide
 		zss_editor.updateScrollOffset = false;
+        zss_editor.insertImages = []
+        zss_editor.insertAudios = []
 
 		/**
 		 * The initializer function that must be called onLoad
@@ -4400,7 +4402,7 @@
 
 			$(window).on('touchmove', function (e) { //手势滑动时，隐藏键盘
 				zss_editor.debug('============ touchmove')
-				clearTimeout(onLongPressTimeOut);
+//				clearTimeout(onLongPressTimeOut);
 //                e.preventDefault();
 
 //                touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
@@ -4411,18 +4413,25 @@
 //
 //                };
 
-                moveTime=new Date().getTime()
-                if(onLongKeyDown){//长按事件
-//					zss_editor.calculateEditorHeightWithCaretPosition();
-                    zss_editor.debug('=====touchmove======= onLongKeyDown; ' + onLongKeyDown)
-                }else{
-//                    zss_editor.keyboardHide();
-                    zss_editor.isDragging = true;
-                    zss_editor.updateScrollOffset = true;
-                    zss_editor.setScrollPosition();
-                    zss_editor.setTouchmoveEvent();
-                    zss_editor.enabledEditingItems(e);
-				}
+
+                zss_editor.isDragging = true;
+                zss_editor.updateScrollOffset = true;
+                zss_editor.setScrollPosition();
+                zss_editor.setTouchmoveEvent();
+                zss_editor.enabledEditingItems(e);
+
+//                moveTime=new Date().getTime()
+//                if(onLongKeyDown){//长按事件
+////					zss_editor.calculateEditorHeightWithCaretPosition();
+//                    zss_editor.debug('=====touchmove======= onLongKeyDown; ' + onLongKeyDown)
+//                }else{
+////                    zss_editor.keyboardHide();
+//                    zss_editor.isDragging = true;
+//                    zss_editor.updateScrollOffset = true;
+//                    zss_editor.setScrollPosition();
+//                    zss_editor.setTouchmoveEvent();
+//                    zss_editor.enabledEditingItems(e);
+//				}
 
 			});
 			$(window).on('touchstart', function (e) {
@@ -4433,20 +4442,20 @@
 //              startY = touch.changedTouches[0].pageY;
 
 				//设置长按事件
-                onLongPressTimeOut = setTimeout(function() {
-                    onLongKeyDown = true;
-                    zss_editor.debug('===touchstart========= onLongKeyDown ;' + onLongKeyDown)
-                }, 500);
+//                onLongPressTimeOut = setTimeout(function() {
+//                    onLongKeyDown = true;
+//                    zss_editor.debug('===touchstart========= onLongKeyDown ;' + onLongKeyDown)
+//                }, 500);
 
-                lastTime = new Date().getTime();
+//                lastTime = new Date().getTime();
 
                 zss_editor.isDragging = false;
 			});
 
             $(window).on('touchend', function (e) {
-                clearTimeout(onLongPressTimeOut);
-                zss_editor.calculateEditorHeightWithCaretPosition();
-                onLongKeyDown = false;
+//                clearTimeout(onLongPressTimeOut);
+//                zss_editor.calculateEditorHeightWithCaretPosition();
+//                onLongKeyDown = false;
 //                e.preventDefault();
                 zss_editor.debug('===========================touchend');
 //              var touch = e.originalEvent,
@@ -4464,18 +4473,18 @@
 //                    zss_editor.keyboardHide();
 //				}
 
-                zss_editor.isDragging = false;
+//                zss_editor.isDragging = false;
             });
 
 			$(window).on('scroll', function (e) { //当HTML滚动时，通知WebView进行滚动
 				zss_editor.debug('============ scroll')
-				if(onLongKeyDown){
+//				if(onLongKeyDown){
 
-				}else{
+//				}else{
                     if (zss_editor.platform === 'ios') {
                         zss_editor.updateOffset();
                     }
-				}
+//				}
 
 			});
 
@@ -4621,8 +4630,8 @@
 
 		zss_editor.setScrollPosition = function () {
 			var position = window.pageYOffset;
-			// var position = window.document.body.scrollTop;
-			// var position = currentoffsetY;
+			 var position = window.document.body.scrollTop;
+			 var position = currentoffsetY;
 			WebViewBridge.send(JSON.stringify({
 				type: 'SCROLL',
 				data: position
@@ -4673,51 +4682,21 @@
 		var currentNewPos;
 //		var currentoffsetY;
 		zss_editor.calculateEditorHeightWithCaretPosition = function () {
-			var caretYPosition = zss_editor.getCaretYPosition();
-			var lineHeight = 20;
-			var halfLineHeight = lineHeight / 2;
-			var offsetY = window.document.body.scrollTop;
-			currentoffsetY = offsetY;
-			var editorHeight = zss_editor.editorHeight;
-			var newPos;
-
-
-			 zss_editor.debug('======== caretYPosition = ' + caretYPosition)
-			 zss_editor.debug('======== offsetY = ' + offsetY)
-//			 zss_editor.debug('======== editorHeight = ' + editorHeight)
-
-			var futureEditorHeight = caretYPosition + lineHeight;
-
-			if (caretYPosition < offsetY) {
-				newPos = caretYPosition;
-                zss_editor.debug('========if ---- caretYPosition < offsetY （caretYPosition = newPos）= ' + newPos)
-			} else if (futureEditorHeight > editorHeight + offsetY) {
-				newPos = futureEditorHeight - editorHeight + halfLineHeight;
-                zss_editor.debug('======== futureEditorHeight = ' + futureEditorHeight)
-                zss_editor.debug('======== halfLineHeight = ' + halfLineHeight)
-                zss_editor.debug('======== else if ---- futureEditorHeight - editorHeight + halfLineHeight =  newPos = ' + newPos)
-			} else {
-				// newPos = futureEditorHeight - caretYPosition - editorHeight + halfLineHeight;
-			}
-			if (newPos) {
-
-//				zss_editor.debug('========  if  newPos = ' + newPos)
-//				if(currentNewPos !== newPos){
-                    zss_editor.debug('========&&&&&&&&&&&&&&& scrollTo if  newPos = ' + (newPos))
-//                    window.scrollTo(0, (newPos));
-                setTimeout(function(){
-                    window.scrollTo(0, (newPos));
-                },450)
-                    currentNewPos = newPos;
-//				}
-
-				// currentNewPos = newPos
-			} else {
-				// window.scrollTo(0, 0);
-				zss_editor.debug('========scrollTo  else  newPos = ' + newPos)
-//                zss_editor.debug('======== else  offsetY = ' + offsetY)
-//				window.scrollTo(0, caretYPosition);
-			}
+            var caretYPosition = zss_editor.getCaretYPosition();
+            var lineHeight = 20;
+            var halfLineHeight = lineHeight/2;
+            var offsetY = window.document.body.scrollTop;
+            var editorHeight = zss_editor.editorHeight;
+            var newPos;
+            var futureEditorHeight = caretYPosition + lineHeight;
+            if (caretYPosition < offsetY) {
+                newPos = caretYPosition;
+            } else if (futureEditorHeight > editorHeight + offsetY) {
+                newPos = futureEditorHeight - editorHeight + halfLineHeight;
+            }
+            if (newPos) {
+                window.scrollTo(0, newPos);
+            }
 		}
 
 		zss_editor.backuprange = function () {
@@ -4759,14 +4738,57 @@
 			}
 		};
 
-		zss_editor.setBold = function () {
-			document.execCommand('bold', false, null);
-			zss_editor.enabledEditingItems();
+		zss_editor.setBold = function (selection) {
+//            zss_editor.restorerange()
+
+            document.execCommand('bold', false, null);
+            zss_editor.enabledEditingItems();
+
+//			document.execCommand('bold', false, null);
+
+            // var s = zss_editor.getSelectedNode();
+            // var t = $(s);
+            //
+            // var font = t.css('font-weight');
+            //
+            // var spanBlod = null;
+            // if (font.length != 0 && font == 'bold') {
+            //     spanBlod = '<span style="font-weight: normal">'+ encodeHtmlEntities(selection) +'</span>'
+            // }else{
+            //     spanBlod = '<span style="font-weight: bold">'+ encodeHtmlEntities(selection) +'</span>'
+            // }
+            //
+            // zss_editor.restorerange();
+            // var sel = document.getSelection();
+            // sel.deleteFromDocument();
+            // document.execCommand('insertHTML', false, spanBlod);
+            // zss_editor.enabledEditingItems();
 		}
 
-		zss_editor.setItalic = function () {
-			document.execCommand('italic', false, null);
-			zss_editor.enabledEditingItems();
+		zss_editor.setItalic = function (selection) {
+
+            document.execCommand('italic', false, null);
+            zss_editor.enabledEditingItems();
+
+            // var s = zss_editor.getSelectedNode();
+            // var t = $(s);
+            //
+            // var font = t.css('font-style');
+            //
+            // var spanItalic = null;
+            // if (font.length != 0 && font == 'italic') {
+            //     spanItalic = '<span style="font-style: normal ">'+ encodeHtmlEntities(selection) +'</span>'
+            // }else{
+            //     spanItalic = '<span style="font-style: italic">'+ encodeHtmlEntities(selection) +'</span>'
+            // }
+            //
+            //
+            // zss_editor.restorerange();
+            // var sel = document.getSelection();
+            // sel.deleteFromDocument();
+            // document.execCommand('insertHTML', false, spanItalic);
+            // zss_editor.enabledEditingItems();
+
 		}
 
 		zss_editor.setSubscript = function () {
@@ -4835,15 +4857,26 @@
 		}
 
 
+
         //正文设置
-        zss_editor.setZWing = function (zwing) {
+        zss_editor.setZWing = function (zwing, selection) {
+
+
+            zss_editor.restorerange()
             var current_selection = $(zss_editor.getSelectedNode());
             var t = current_selection.prop("tagName").toLowerCase();
+            zss_editor.debug('============== setZWing ======' + t);
+
+//            var c = current_selection.html();
+//            current_selection.replaceWith(c);
+
             var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
             if (is_heading) {
+
                 document.execCommand('formatBlock', false, "<div>");
 //                var c = current_selection.html();
 //                current_selection.replaceWith(c);
+
             }else if(t == 'div'){
 
             }else if(t == 'li'){
@@ -4856,17 +4889,60 @@
 //                current_selection.replaceWith(c);
                 document.execCommand('formatBlock', false, "<div>");
             }
+
+
+//			document.execCommand('formatBlock', false, "<p>");
             zss_editor.enabledEditingItems();
+
+
+
+//            var current_selection = $(zss_editor.getSelectedNode());
+//            var c = current_selection.html();
+//            current_selection.replaceWith(c);
+
+//            var sel = document.getSelection();
+//            sel.deleteFromDocument();
+//
+//            document.execCommand('insertHTML', false, '<div>'+ encodeHtmlEntities(selection) +'</div>');
+//            zss_editor.enabledEditingItems();
+
+//            var t = current_selection.prop("tagName").toLowerCase();
+//            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+//            if (is_heading) {
+//                document.execCommand('formatBlock', false, "<div>");
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+//            }else if(t == 'div'){
+//
+//            }else if(t == 'li'){
+//                document.execCommand('insertUnorderedList', false, null);
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+//                document.execCommand('formatBlock', false, "<div>");
+//            }else if(t == 'span'){
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+//                document.execCommand('formatBlock', false, "<div>");
+//            }
+
         }
 
-        zss_editor.setHeading = function (heading) {
+        zss_editor.setHeading = function (heading, selection) {
+
+
+
+            zss_editor.restorerange()
+
             var current_selection = $(zss_editor.getSelectedNode());
             var t = current_selection.prop("tagName").toLowerCase();
+            zss_editor.debug(':::::::::::::::: tagName' + t)
+
 
             var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
             if (is_heading && heading == t) {
                 var c = current_selection.html();
                 current_selection.replaceWith(c);
+
             } else {
                 if(t == 'li'){
                     document.execCommand('insertUnorderedList', false, null);
@@ -4883,11 +4959,107 @@
                     current_selection.replaceWith(c);
 //                    document.execCommand('formatBlock', false, '<div>');
                 }
+
+
+
                 document.execCommand('formatBlock', false, '<' + heading + '>');
             }
-            zss_editor.enabledEditingItems();
-        }
 
+
+            zss_editor.enabledEditingItems();
+//                current_selection.replaceWith(c);
+
+
+//            var sel = document.getSelection();
+//            sel.deleteFromDocument();
+//
+//
+//            var headingSpan;
+//            if (heading == 'h1') {
+//                headingSpan = '<h1>'+ encodeHtmlEntities(selection) +'</h1>'
+//            }
+//            if (heading == 'h2') {
+//                headingSpan = '<h2>'+ encodeHtmlEntities(selection) +'</h2>'
+//            }
+//
+//            if (heading == 'h3') {
+//                headingSpan = '<h3>'+ encodeHtmlEntities(selection) +'</h3>'
+//            }
+//
+//            document.execCommand('insertHTML', false, headingSpan);
+//            zss_editor.enabledEditingItems();
+
+
+
+
+
+
+//            var current_selection = $(zss_editor.getSelectedNode());
+//            var t = current_selection.prop("tagName").toLowerCase();
+
+
+
+//            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+//            if (is_heading && heading == t) {
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+//            } else {
+//                if(t == 'li'){
+//                    document.execCommand('insertUnorderedList', false, null);
+//                    var c = current_selection.html();
+//                    current_selection.replaceWith(c);
+//                }else if(t == 'ul'){
+//                    document.execCommand('insertOrderedList', false, null);
+//                    var c = current_selection.html();
+//                    current_selection.replaceWith(c);
+//                }else if(t == 'span'){
+//                    var c = current_selection.html();
+//                    current_selection.replaceWith(c);
+//                }
+
+
+//                document.execCommand('formatBlock', false, '<' + heading + '>');
+//            }
+//            zss_editor.enabledEditingItems();
+        }
+        zss_editor.setUnorderedList = function (selection) {
+
+            zss_editor.restorerange()
+            var current_selection = $(zss_editor.getSelectedNode());
+            var t = current_selection.prop("tagName").toLowerCase();
+            zss_editor.debug(':::::::::::::::: setUnorderedList  > tagName' + t)
+
+            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+            if (is_heading || t == 'span') {
+                var c = current_selection.html();
+                current_selection.replaceWith(c);
+            }
+
+            document.execCommand('insertUnorderedList', false, null);
+
+            zss_editor.enabledEditingItems();
+
+
+
+
+//            zss_editor.restorerange()
+//            var sel = document.getSelection();
+//            sel.deleteFromDocument();
+//
+//            document.execCommand('insertUnorderedList', false, '<span>'+ encodeHtmlEntities(selection) +'</span>');
+//            zss_editor.enabledEditingItems();
+
+
+//            var current_selection = $(zss_editor.getSelectedNode());
+//            var t = current_selection.prop("tagName").toLowerCase();
+//            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
+//            if (is_heading || t == 'span') {
+//                var c = current_selection.html();
+//                current_selection.replaceWith(c);
+//            }
+//            document.execCommand('insertUnorderedList', false, null);
+//            zss_editor.enabledEditingItems();
+        }
 		zss_editor.setParagraph = function () {
 			var current_selection = $(zss_editor.getSelectedNode());
 			var t = current_selection.prop("tagName").toLowerCase();
@@ -4920,17 +5092,7 @@
 			zss_editor.enabledEditingItems();
 		}
 
-        zss_editor.setUnorderedList = function () {
-            var current_selection = $(zss_editor.getSelectedNode());
-            var t = current_selection.prop("tagName").toLowerCase();
-            var is_heading = (t == 'h1' || t == 'h2' || t == 'h3' || t == 'h4' || t == 'h5' || t == 'h6');
-            if (is_heading || t == 'span') {
-                var c = current_selection.html();
-                current_selection.replaceWith(c);
-            }
-            document.execCommand('insertUnorderedList', false, null);
-            zss_editor.enabledEditingItems();
-        }
+
 
 		zss_editor.setJustifyCenter = function () {
 			document.execCommand('justifyCenter', false, null);
@@ -4976,52 +5138,108 @@
 
 		}
 
-		zss_editor.setTextColor = function (color) {
-			zss_editor.debug('====== currentSelection')
-			 if (String(getSelection()).length > 0) {
+		zss_editor.setTextColor = function (color, selection) {
+
+            if (String(getSelection()).length > 0) {
+                document.execCommand("styleWithCSS", null, true);
+                //设置前景色
+                document.execCommand('foreColor', false, color);
+                document.execCommand("styleWithCSS", null, false);
+                zss_editor.calculateEditorHeightWithCaretPosition();
+                zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
+                zss_editor.enabledEditingItems();
+            }else{
+                zss_editor.calculateEditorHeightWithCaretPosition();
+                zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
+            }
+
+
+
+
+//             zss_editor.restorerange();
+//             var sel = document.getSelection();
+//             sel.deleteFromDocument();
+// //            document.execCommand('insertHTML', false, '<p style="color:'+ color +';">'+selection+'</p>');
+//             document.execCommand('insertHTML', false, '<span style="color: '+ color +'">'+ selection +'</span>');
+//             zss_editor.enabledEditingItems();
+
+//            zss_editor.restorerange();
+//			 if (String(document.getSelection()).length > 0) {
 //			 	zss_editor.restorerange();
-                 document.execCommand("styleWithCSS", null, true);
-                 //设置前景色
-                 document.execCommand('foreColor', false, color);
-				 document.execCommand("styleWithCSS", null, false);
-                 zss_editor.calculateEditorHeightWithCaretPosition();
-                 zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
-                 zss_editor.enabledEditingItems();
-			 }else{
+
+//                 document.execCommand("styleWithCSS", null, true);
+//                 //设置前景色
+//                 document.execCommand('foreColor', false, color);
+//				 document.execCommand("styleWithCSS", null, false);
+//                 zss_editor.calculateEditorHeightWithCaretPosition();
+//                 zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
+//                 zss_editor.enabledEditingItems();
+//			 }else{
 //			    zss_editor.debug('********************** none currentSelection')
-                 zss_editor.calculateEditorHeightWithCaretPosition();
-                 zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
-			 }
+//                 zss_editor.calculateEditorHeightWithCaretPosition();
+//                 zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
+//			 }
 
 
 			// document.execCommand("removeFormat", false, "foreColor"); // Removes just foreColor
 
 		}
 
-		zss_editor.setBackgroundColor = function (color) {
+		zss_editor.setBackgroundColor = function (color, selection) {
 
-			 if (String(getSelection()).length > 0) {
-//			 	zss_editor.restorerange();
-                 document.execCommand("styleWithCSS", null, true);
-                 //设置背景色
-                 document.execCommand('hiliteColor', false, color);
-                 document.execCommand("styleWithCSS", null, false);
-                 zss_editor.enabledEditingItems();
-			 }else{
-					//无选中内容
-			 }
+            if (String(getSelection()).length > 0) {
+                document.execCommand("styleWithCSS", null, true);
+                //设置背景色
+                document.execCommand('hiliteColor', false, color);
+                document.execCommand("styleWithCSS", null, false);
+                zss_editor.enabledEditingItems();
+            }else{
+                //无选中内容
+            }
             zss_editor.calculateEditorHeightWithCaretPosition();
+
+
+
+
+//		    zss_editor.debug('----------------' + select_content)
+//             zss_editor.restorerange();
+//             var sel = document.getSelection();
+//             sel.deleteFromDocument();
+//             document.execCommand('insertHTML', false, '<span style="background-color:'+ color +';">'+ encodeHtmlEntities(selection) +'</span>');
+//             zss_editor.enabledEditingItems();
+
+
+//			  zss_editor.restorerange();
+//			 if (String(document.getSelection()).length > 0) {
+//                 <p class="ex">该段落定义了 class="ex"。该段落中的文本是蓝色的。</p>
+
+//                 zss_editor.restorerange();
+//                 var sel = document.getSelection();
+//                 sel.deleteFromDocument();
+//                 document.execCommand('insertHTML', false, '<p style="color:'+ color +';">asdfasdf</p>');
+
+//                 document.execCommand("styleWithCSS", null, true);
+//                 //设置背景色
+//                 document.execCommand('hiliteColor', false, color);
+//                 document.execCommand("styleWithCSS", null, false);
+//                 zss_editor.enabledEditingItems();
+//			 }else{
+					//无选中内容
+//			 }
+//            zss_editor.enabledEditingItems();
+//            zss_editor.calculateEditorHeightWithCaretPosition();
 		}
 
 		// Needs addClass method
 
 		zss_editor.insertLink = function (url, title) {
 
+            zss_editor.debug('s&&&&&&&&&&&&&& - url = '+ url)
+            zss_editor.debug('s&&&&&&&&&&&&&& - title = '+ title)
 			zss_editor.restorerange();
 			var sel = document.getSelection();
 			sel.deleteFromDocument();
-			document.execCommand('insertHTML', false, '<a href="' + encodeHtmlEntities(url) + '">' + encodeHtmlEntities(title) +
-				'</a>');
+			document.execCommand('insertHTML', false, '<a id="link" href="' + encodeHtmlEntities(url) + '">' + encodeHtmlEntities(title) +'</a>');
 
 			zss_editor.enabledEditingItems();
 		}
@@ -5258,33 +5476,115 @@
 
         //插入音频
         zss_editor.insertAudio = function (attributes) {
-            zss_editor.debug("insert audio  = " + attributes);
+            zss_editor.debug('insert audio  = ' + attributes);
+//            zss_editor.focusContent()
 
-//            var attr = attributes;
-            // attr.id = "audio";
-//            var audioContainer = $('<div><a id="audio" href="' + attributes.audio + '"><img></a></div>');
+            zss_editor.restorerange();
 
-//            var audioContainer = $('<div align="center"><div align="center">'+
-//                '<audio  controls>' +
-//                '<source src="'+attributes.audio+'"/>' +
-//                '</audio>' +
-//				'</div></div>'
-//
-//                );
 
-            var audioHTML = '<div align="center">'+
-                '<audio  controls>' +
-                '<source src="'+attributes.audio+'"/>' +
-                '</audio>' +
-                '</div>';
-//            audioContainer.find('img').attr(attr);
 
-            zss_editor.insertHTML('<br><br>' + audioHTML+ '<br><br><br>');
 
-            setTimeout(function(){
+            var attrs = attributes;
+
+            var name = attrs.name;
+            var out_div_name = 'out_div' + name;
+            var int_div_name = 'int_div' + name;
+
+            var  delete_icon_id = 'audio_close' + name
+
+           	var div_delete_icon_id = 'div_audio_close'+name;
+
+            if(zss_editor.insertAudios.indexOf(name) != -1){//包含
+
+                document.getElementById(img_loadingg_id).remove();
+//                document.getElementById(delete_icon_id).id='audio_close';
+
+
+
+                document.getElementById(name).src= attrs.audio;
+                document.getElementById(name).setAttribute("style","visibility: visible;");
+
+
+                document.getElementById(out_div_name).setAttribute("style","background-color:transparent");
+
+                document.getElementById(int_div_name).setAttribute("style","position:relative;");
+
+
+                document.getElementById(delete_icon_id).setAttribute("style","position:absolute; right: 20px; top: 2px; visibility: visible");
+                document.getElementById(delete_icon_id).id='audio_close';
+
+                //删除对应的元素
+                for(var i=0; i< zss_editor.insertAudios.length; i++) {
+                    if(zss_editor.insertAudios[i] == name) {
+                        zss_editor.insertAudios.splice(i, 1);
+                        break;
+                    }
+                }
+
+
+            }else {//不包含
+                zss_editor.insertAudios.push(name)
+
+                var audioHTML =
+					'<div id="'+out_div_name+'" align="center" style="background-color:transparent;">' +
+                   		 '<div id="'+int_div_name+'" style="position:relative; opacity: 1.0; background-color: transparent;width:310px;" >' +
+
+								'<div style="visibility: visible;" >' +
+                                    '<a id="audio" >' +
+										'<audio id="'+name+'" style="width: 280px; "  src="'+attributes.audio+'" controls ">' +
+										'</audio>' +
+									'</a>'+
+								'</div>' +
+
+
+								 '<div id="'+div_delete_icon_id+'"  name="'+name+'" class="close">' +
+									'<a id="audio_close" >' +
+										'<img style="width:60px; height:40px;background: transparent; opacity: 0;cursor: pointer;"/>' +
+									'</a>' +
+								'</div>' +
+
+					     '</div>' +
+                    '' +
+                    '</div>';
+
+                document.execCommand('insertHTML', false, '<br />'+ audioHTML +'<br />');
+                zss_editor.focusEditor('zss_editor_content')
                 zss_editor.calculateEditorHeightWithCaretPosition();
                 zss_editor.enabledEditingItems();
-            }, 500)
+            }
+
+
+
+
+
+//            var audioContainer = $('<div align="center">' +
+//                '<audio  controls="controls">' +
+//                '<source src="'+attributes.audio+'"/>' +
+//                '</audio>' +
+//
+//                '</div>');
+
+
+
+
+//            document.execCommand('insertHTML', false, '<p style="color:'+ color +';">'+selection+'</p>');
+//            document.execCommand('insertHTML', false, '<br><p>'+ audioHTML +'</p><br>');
+
+
+
+//            zss_editor.insertHTML('<br><br>' + audioHTML+ '<br><br>');
+
+
+//            zss_editor.calculateEditorHeightWithCaretPosition();
+
+//            zss_editor.enabledEditingItems();
+
+//            zss_editor.focusEditor('zss_editor_content')
+
+//            setTimeout(function(){
+//                zss_editor.calculateEditorHeightWithCaretPosition();
+//                zss_editor.enabledEditingItems();
+//            }, 500)
 
 
 
@@ -5303,7 +5603,8 @@
 					type: anchor.attr('id')
 				};
 
-				zss_editor.debug(link)
+				zss_editor.debug('link' + link)
+
 				if (zss_editor.isDragging) {
 					return;
 				}
@@ -5318,6 +5619,16 @@
 				    return;
 				}
 
+                if(anchor.attr('id') === 'audio_close'){
+
+                    //获取顶层的父元素
+                    var img_container = anchor.parent().parent();
+
+                    //移除整个父元素
+                    img_container.remove();
+                    return;
+                }
+
 				WebViewBridge.send(JSON.stringify({
 					type: 'LINK_TOUCHED',
 					data: link
@@ -5328,38 +5639,131 @@
 
 		zss_editor.insertImage = function (attributes) {
 
-			zss_editor.restorerange();
-			var attrs = attributes;
 
-//			var imageContainer = $('<div>' +
-//
-//				'<a id="imga" href="' + attrs.src + '"><img></a>' +
-//				'' +
-//				'</div>');
-//            imageContainer.find('#imga img').attr(attrs);
-
-            var html = '<div id="img_container" align="center" >' +
-				'<div style="position:relative; width:'+attrs.width+'px; height: '+attrs.height+'px;" >' +
-				'<a id="img_close" style=" position:absolute; right: -10px; top: -15px;"><img src="../img/icon_format_link@1.5x.png"></a>' +
-				'<a id="imga" href="' + attrs.src + '"><img style=" width="'+attrs.width+'" height="'+attrs.height+'" src="'+attrs.src+ '"></a>' +
-				'' +
-				'</div></div>'
-
-
-//			zss_editor.debug(html)
-
-			zss_editor.insertHTML('<br><br><br>' +  html + '<br><br>');
+            zss_editor.restorerange();
 
 
 
-//            if (zss_editor.platform === 'android') {
-//                zss_editor.blurContentEditor();
-				setTimeout(function(){
-                    zss_editor.calculateEditorHeightWithCaretPosition();
-                    zss_editor.enabledEditingItems();
-				}, 500)
+//            zss_editor.restorerange();
+//            var imageContainer = $('<div><img></div>');
+//            imageContainer.find('img').attr(attributes);
+//            zss_editor.insertHTML('<br>' + imageContainer.html() + '<br>');
+//            zss_editor.enabledEditingItems();
 
-//            }
+
+//            var sel = document.getSelection();
+//            sel.deleteFromDocument();
+
+            var attrs = attributes;
+
+			var name = attrs.name;
+			var out_div_name = 'out_div' + name;
+
+			var int_div_name = 'int_div' + name;
+			
+			var  div_delete_icon_id = 'div_img_close' + name
+
+			// if(zss_editor.insertImages.indexOf(name) != -1){//包含
+
+                // document.getElementById(name).src= attrs.src;
+                // document.getElementById(name).width= attrs.width;
+                // document.getElementById(name).height= attrs.height;
+                //
+                //
+                // document.getElementById(out_div_name).setAttribute("style","background-color:transparent");
+
+//                document.getElementById(int_div_name).width= attrs.width;
+//                 document.getElementById(int_div_name).setAttribute("style",'width:'+attrs.width+'; height:'+ attrs.height +'; position:relative; left: -3px;');
+//                document.getElementById(int_div_name).height= attrs.height;
+
+
+                // document.getElementById(div_delete_icon_id).setAttribute("style","position:absolute; right: 60px; top: -20px; visibility: visible");
+                // document.getElementById(delete_icon_id).id='img_close';
+
+                //删除对应的元素
+                // for(var i=0; i< zss_editor.insertImages.length; i++) {
+                //     if(zss_editor.insertImages[i] == name) {
+                //         zss_editor.insertImages.splice(i, 1);
+                //         break;
+                //     }
+                // }
+                
+
+			// }else{//不包含
+				
+                // zss_editor.insertImages.push(name)
+           
+                // var deleteIcon = zss_editor.platform ==='ios'? '../img/icon_delete_img.png' : './icon_delete_img@2x.png'
+                // var deleteIcon = 'https://yhktemp.oss-cn-qingdao.aliyuncs.com/temp%2Fawl%2F2017%2F12%2F17%2Fg6aF54LPFsJqjm79B6xW8n.jpg'
+//                var deleteIcon = zss_editor.platform ==='ios'? '../img/icon_delete_img.png' : './icon_delete_img@2x.png'
+
+                // var html =
+                //     '<div id="'+out_div_name+'" align="center" style="background-color: #c8cccf;">' +
+                //     '<div id="'+int_div_name+'" style="position:relative; left: -3px; width:96%; height: '+200+'px;" >' +
+                //     '<div id="'+div_delete_icon_id+'"  name="'+name+'" class="close">' +
+                //     '<a id="img_close" >' +
+                //     '<img style="width:60px; height:40px;background: transparent; opacity: 0;cursor: pointer;"/>' +
+                //     '</a>' +
+                //     '</div>' +
+                //     '<a id="imga" href="' + attrs.src + '"><img id="'+ name +'" style=" width="'+attrs.width+'" height="'+attrs.height+'" src="'+attrs.src+ '"></a>' +
+                //     '' +
+                //     '</div>' +
+                //     '</div>'
+
+
+
+
+                var html =
+					'<div id="'+out_div_name+'" align="center" style="background-color: transparent;">' +
+                    	'<div id="'+int_div_name+'" style="position:relative; background-color:transparent; width: '+attrs.width+'px; height:'+attrs.height+'px;" >' +
+							'<div id="'+div_delete_icon_id+'"  name="'+name+'" class="close">' +
+								'<a id="img_close" >' +
+									'<img style="width:60px; height:40px;background: transparent; opacity: 0;cursor: pointer;"/>' +
+								'</a>' +
+							'</div>' +
+							'<a id="imga" href="' + attrs.src + '"><img id="'+ name +'" style="object-fit:cover; width: '+attrs.width+'px; height:'+attrs.height+'px;" src="'+attrs.src+ '" /></a>' +
+							'' +
+						'</div>' +
+					'</div>'
+
+                // var html = '<div id="img_container" align="center" >' +
+                //     '<div style="position:relative; width:'+attrs.width+'px; height: '+attrs.height+'px;" >' +
+                //     '<a id="img_close" style=" position:absolute; right: -10px; top: -15px;"><img src="../img/icon_format_link@1.5x.png"></a>' +
+                //     '<a id="imga" href="' + attrs.src + '"><img style=" width="'+attrs.width+'" height="'+attrs.height+'" src="'+attrs.src+ '"></a>' +
+                //     '' +
+                //     '</div></div>'
+
+
+
+                // var html = '<div id="'+out_div_name+'" align="center" style="background-color: #c8cccf;">' +
+                //     '<div id="'+int_div_name+'" style="position:relative; left: -3px; width:'+attrs.width+'px; height: '+attrs.height+'px;" >' +
+                //     '<a id="'+delete_icon_id+'" name="'+name+'" style=" position:absolute; right: -10px; top: -15px; visibility: hidden"><div id="'+delete_icon_id+'" name="'+name+'" class="close"></a>' +
+                //     '<a id="imga" href="' + attrs.src + '"><img id="'+ name +'" style=" width="'+attrs.width+'" height="'+attrs.height+'" src="'+attrs.src+ '"></a>' +
+                //     '' +
+                //     '</div></div>'
+
+
+//            zss_editor.insertHTML('<br><br>' +  html + '<br><br>');
+                document.execCommand('insertHTML', false, '<br /><br />' +  html + '<br /><br />');
+                // zss_editor.insertHTML('<br /><br />' +  html + '<br /><br />');
+                zss_editor.focusEditor('zss_editor_content')
+                zss_editor.calculateEditorHeightWithCaretPosition();
+                zss_editor.enabledEditingItems();
+
+			// }
+
+
+
+
+
+
+
+
+//				setTimeout(function(){
+//                    zss_editor.calculateEditorHeightWithCaretPosition();
+//                    zss_editor.enabledEditingItems();
+//				}, 500)
+
 		}
 
 		zss_editor.insertImageBase64String = function (imageBase64String, alt) {
@@ -5453,6 +5857,11 @@
 
 			return h;
 		}
+
+		//获取整个body内容
+        zss_editor.getBodyHTML = function () {
+            return getHtml("zss_editor_body");
+        }
 
 		//获取HTML格式的标题
 		zss_editor.getTitleHTML = function () {
@@ -5556,8 +5965,19 @@
 				//Fonts
 				var font = t.css('font-family');
 				if (font.length != 0 && font != 'Arial, Helvetica, sans-serif') {
-					items.push('fonts');
+					items.push('font-family');
 				}
+
+                var font = t.css('font-weight');
+                if (font.length != 0 && font == 'bold') {
+                    items.push('font-weight');
+                }
+
+                var font = t.css('font-style');
+                if (font.length != 0 && font == 'italic') {
+                    items.push('font-style');
+                }
+
 
 				// Blockquote
 				if (nodeName == 'blockquote') {
@@ -5684,47 +6104,25 @@
 
 		* {
 			outline: 0px solid transparent;
-			-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+			-webkit-tap-highlight-color: rgba(0,0,0,0);
 			-webkit-touch-callout: none;
 		}
-
-		html,
-		/*body {*/
-			/*padding: 10px;*/
-			/*margin: auto;*/
-			/*font-family: Arial, Helvetica, sans-serif;*/
-			/*font-size: 1em;*/
-			/*color: #2d4150;*/
-
-			/*-webkit-overflow-scrolling: touch;*/
-			/*height: 100%;*/
-			/*max-height: 100%;*/
-			/*width: 100%;*/
-			/*max-width: 100%;*/
-
-			/*!*overflow: scroll;*!*/
-            /*overflow: auto;*/
-            /*!*overflow-y: scroll;*!*/
-
-		/*}*/
-        html, body {
-            padding: 0;
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            font-size:1em;
-            color:#2d4150;
-            height: 100%;
-            max-height: 100%;
-            width: 98%;
-            max-width: 98%;
-        }
-
-        body {
-
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch;
-            height: 100%;
-        }
+		html, body {
+			padding: 0;
+			margin: 0;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size:1em;
+			color:#2d4150;
+		}
+		body {
+			padding-left:10px;
+			padding-right:10px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+			overflow-y: scroll;
+			-webkit-overflow-scrolling: touch;
+			height: 100%;
+		}
 
 		img.zs_active {
 			/*border: 2px dashed #000;*/
@@ -5744,11 +6142,10 @@
 		div.zss_editor_content {
 			font-family: Arial, Helvetica, sans-serif;
 			color: #000;
-			width: 100%;
-			height: 100%;
-            -webkit-overflow-scrolling: touch;
-            overflow:auto;
-
+			width: 98%;
+			height: 98%;
+			-webkit-overflow-scrolling: touch;
+			overflow:auto;
 			/*background-color: green;*/
 		}
 
@@ -5841,7 +6238,58 @@
 
 		/* ----------------------- */
 
+		.delete_icon_box{
+			/*width: 30px;*/
+			/*height: 30px;*/
+			/*background-color: black;*/
+			/*border: 1px solid transparent;*/
+			/*border-radius: 100%;*/
+			/*outline: 15px solid white;*/
+			/*outline-offset: -39px;*/
+			/*cursor: pointer;*/
+			/*transform: rotate(45deg);*/
 
+		}
+
+		.close {
+			visibility: visible;
+			position: absolute;
+			right: 2px;
+			top: 2px;
+			width: 25px;
+			height: 25px;
+			background: #000000;
+			opacity:0.5;
+			border-radius: 25px;
+			box-shadow: 2px 2px 5px 0px black;
+			cursor: pointer;
+		}
+
+		.close:hover {
+			background:#222222;
+			opacity:0.5;
+		}
+		.close:before {
+			position: absolute;
+			content: '';
+			width: 15px;
+			height: 2px;
+			background: white;
+			transform: rotate(45deg);
+			top: 12px;
+			left: 5px;
+
+		}
+		.close:after{
+			content: '';
+			position: absolute;
+			width: 15px;
+			height: 2px;
+			background: white;
+			transform: rotate(-45deg);
+			top: 12px;
+			left: 5px;
+		}
 
 
 	</style>
@@ -5865,13 +6313,15 @@
          <!--</div>-->
     <!--</div>-->
 
+	<div id="zss_editor_body">
 
-	<div id="zss_editor_title" class="zss_editor_title" contenteditable="true" placeholder="" disableLineBreaks="true"></div>
-	<div id="separatorContainer">
-		<hr>
+		<div id="zss_editor_title" class="zss_editor_title" contenteditable="true" placeholder="" disableLineBreaks="true"></div>
+		<div id="separatorContainer">
+			<hr>
+		</div>
+		<div id="zss_editor_content" class="zss_editor_content" contenteditable="true" placeholder=""></div>
+		 <div id="zss_editor_footer"></div>
 	</div>
-	<div id="zss_editor_content" class="zss_editor_content" contenteditable="true" placeholder=""></div>
-	 <div id="zss_editor_footer"></div>
 	<!--<div id="createtable"></div>-->
 </body>
 

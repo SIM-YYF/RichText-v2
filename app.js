@@ -6,11 +6,14 @@
 
 import React, {Component} from 'react';
 import RootNavigator from './RootNavigator'
+import RichTextScreen from './RichTextScreen'
+
 export default class App extends Component{
     render() {
         return (
 
             <RootNavigator/>
+
 
         );
     }

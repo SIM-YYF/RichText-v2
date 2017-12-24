@@ -6,12 +6,13 @@ import {
     TouchableHighlight,
     ListView,
     Dimensions,
+    Modal,
     Platform
 } from "react-native";
 import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter';
 import BaseComponent from '../BaseComponent'
 
-
+var ScreenWidth = Dimensions.get('window').width;
 
 class StyleModal extends BaseComponent {
 
@@ -23,32 +24,42 @@ class StyleModal extends BaseComponent {
         });
 
         this.state = {
-            currentSelection:null,
+            currentSelection: null,
             show: false,
             dataSource: ds.cloneWithRows(["正文", "一级标题 (大)", "二级标题 (中)", "三级标题 (小)", "列表"])
         };
     }
 
 
-    _change_modal_state(isFocus) {
+    _change_modal_state(isFocus, selectedText) {
+
+        this.setState({
+            selectedText: selectedText
+        })
+
+
         //编辑内容重新获取焦点时，隐藏样式层
-        if (isFocus) {
-            if(this.state.currentSelection === null){
-                this.setState({
-                    show: false
-                });
-            }
-            return;
-        }
-        if (!this.state.show) {
-            Platform.OS === 'android' ? this.props.getEditor().blurContentEditor() : null; //强制隐藏键盘
-        }
+        // if (isFocus) {
+        //
+        //     if (this.state.currentSelection === null) {
+        //         this.setState({
+        //             show: false
+        //         });
+        //
+        //     }
+        //     return;
+        // }
+
+        // if (!this.state.show) {
+        //     this.props.getEditor().blurContentEditor()//在android下强制隐藏键盘
+        // }
+
 
         this.showTimeout = setTimeout(() => {
-                this.setState({
-                    show: !this.state.show
-                });
-        }, 300)
+            this.setState({
+                show: !this.state.show
+            });
+        }, 100)
     }
 
     hiddenModal() {
@@ -71,15 +82,17 @@ class StyleModal extends BaseComponent {
             currentSelection: style
         });
 
-        RCTDeviceEventEmitter.emit('updateStyle', style);
-        // this.setState({
-        //     show: true
-        // });
+
+        RCTDeviceEventEmitter.emit('updateStyle', {'style': style, 'selection': this.state.selectedText});
+
+        this.setState({
+            show: false
+        });
 
 
     }
 
-    keyboardWillShow(event){
+    keyboardWillShow(event) {
         if (this.state.show) {
             this.setState({
                 show: false,
@@ -92,6 +105,7 @@ class StyleModal extends BaseComponent {
     //返回cell的方法
     _render_Row(rowData, sectionID, rowID, highlightRow) {
         return (
+
             <TouchableHighlight underlayColor="#f1f1f1" onPress={this._selection_sytle.bind(this, rowID)}>
                 <View
                     style={{
@@ -134,16 +148,60 @@ class StyleModal extends BaseComponent {
     renderView() {
         return (
             <View style={styles.container}>
+                {/*<Modal*/}
+                {/*animationType={"slide"}*/}
+                {/*transparent={false}*/}
+                {/*visible={this.state.show}*/}
+                {/*onRequestClose={() => {!this.state.show}}*/}
+                {/*>*/}
 
-                <View style={styles.subView}>
-                    <ListView
-                        style={{flex: 1}}
-                        dataSource={this.state.dataSource}
-                        renderRow={this._render_Row.bind(this)}
-                        contentContainerStyle={[styles.listViewStyle, {}]} //设置cell的样式
-                        renderSeparator={this._renderSeparator} // 设置分割线样式
-                    />
-                </View>
+
+                <Modal
+                    animationType='slide'           // 从底部滑入
+                    transparent={true}// 透明
+                    visible={this.state.show}    // 根据isModal决定是否显示
+                    onRequestClose={() => {
+                        this.hiddenModal()
+                    }}
+                >
+                    <View style={styles.modalStyle}>
+
+                        <View style={{
+                            height: 200,
+                            alignItems: 'center',
+                            borderWidth: 1,
+                            borderColor: '#ccc',
+                            borderRadius: 1,
+
+                            width: ScreenWidth,
+                            backgroundColor: '#ffffff'
+                        }}>
+
+                            <View style={{width: ScreenWidth, borderBottomWidth:0.5, borderBottomColor:'#ccc',height: 30, justifyContent:'center', alignItems:'flex-end', backgroundColor:'#ffffff'}}>
+                                <TouchableHighlight
+                                    underlayColor="transparent"
+                                    style={styles.buttonStyle}
+                                    onPress={()=>this.hiddenModal()}
+                                >
+                                    <Text style={{color: '#3393F2'}}> 取消 </Text>
+
+                                </TouchableHighlight>
+                            </View>
+
+
+                            <View style={styles.subView}>
+                                <ListView
+                                    style={{flex: 1}}
+                                    dataSource={this.state.dataSource}
+                                    renderRow={this._render_Row.bind(this)}
+                                    contentContainerStyle={[styles.listViewStyle, {}]} //设置cell的样式
+                                    renderSeparator={this._renderSeparator} // 设置分割线样式
+                                />
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
             </View>
 
         );
@@ -162,7 +220,11 @@ class StyleModal extends BaseComponent {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#ECECF0",
-        height: 180
+    },
+    modalStyle: {
+        alignItems: "center",
+        justifyContent: "flex-end",
+        flex: 1
     },
     subView: {
         flex: 1,

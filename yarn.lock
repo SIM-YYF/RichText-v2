@@ -3535,19 +3535,19 @@ react-native-image-zoom-viewer@^2.0.10:
     nt-transmit-transparently "^1.0.7"
     react-native-image-pan-zoom "^2.0.5"
 
-react-native-permissions@^1.0.1:
-  version "1.0.1"
-  resolved "http://registry.npm.taobao.org/react-native-permissions/download/react-native-permissions-1.0.1.tgz#b45c369763c4e298ba52ff9392ca807cbcdd6424"
+react-native-permissions@^1.0.4:
+  version "1.0.4"
+  resolved "http://registry.npm.taobao.org/react-native-permissions/download/react-native-permissions-1.0.4.tgz#745240bbe4fd180265543ef5a5803150cfe8a842"
 
 react-native-sound@^0.10.4:
   version "0.10.4"
   resolved "http://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.10.4.tgz#242286558f457e023dbed42e8c6cbe52cfd313d4"
 
-react-native-tab-view@^0.0.69:
-  version "0.0.69"
-  resolved "http://registry.npm.taobao.org/react-native-tab-view/download/react-native-tab-view-0.0.69.tgz#f52d4354a98a382f10eb5fcf61db5216c91dc7e7"
+react-native-tab-view@^0.0.70:
+  version "0.0.70"
+  resolved "http://registry.npm.taobao.org/react-native-tab-view/download/react-native-tab-view-0.0.70.tgz#1dd2ded32acd0cb6bfef38d26e53675db733b37b"
   dependencies:
-    prop-types "^15.5.8"
+    prop-types "^15.5.10"
 
 react-native-webview-bridge-updated@^1.0.8:
   version "1.0.8"
@@ -3651,9 +3651,9 @@ react-native@0.48.3:
     xtend ">=4.0.0 <4.1.0-0"
     yargs "^6.4.0"
 
-react-navigation@^1.0.0-beta.15:
-  version "1.0.0-beta.15"
-  resolved "http://registry.npm.taobao.org/react-navigation/download/react-navigation-1.0.0-beta.15.tgz#b3d09ce522435cac4d40ac52df64d6dea25df705"
+react-navigation@^1.0.0-beta.21:
+  version "1.0.0-beta.21"
+  resolved "http://registry.npm.taobao.org/react-navigation/download/react-navigation-1.0.0-beta.21.tgz#086c504ba84c966ef8db898baef6fa14ff45a06f"
   dependencies:
     babel-plugin-transform-define "^1.3.0"
     clamp "^1.0.1"
@@ -3661,7 +3661,7 @@ react-navigation@^1.0.0-beta.15:
     path-to-regexp "^1.7.0"
     prop-types "^15.5.10"
     react-native-drawer-layout-polyfill "^1.3.2"
-    react-native-tab-view "^0.0.69"
+    react-native-tab-view "^0.0.70"
 
 react-proxy@^1.1.7:
   version "1.1.8"

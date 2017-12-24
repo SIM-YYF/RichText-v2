@@ -7,8 +7,7 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     View,
-    Modal,
-    TouchableOpacity,
+    Text,
 
 } from 'react-native';
 
@@ -16,37 +15,46 @@ import {ImageViewer, ImageViewerPropsDefine} from "react-native-image-zoom-viewe
 
 
 
-export default class BrowseImages extends Component {
+export default class LookOverImagesScreen extends Component {
 
+    static navigationOptions = ({ navigation }) => ({
+
+        title: "查看大图",
+        headerRight:null,
+        headerLeft:(
+            <View >
+                <Text style={{color:'#ffffff'}} onPress={() => navigation.goBack()}  >  取消 </Text>
+            </View>
+        ),
+
+
+        headerStyle:{backgroundColor: '#3EABF5'},
+
+        headerTitleStyle: {
+            color: '#ffffff',
+            fontSize: 16,
+            //居中显示
+            alignSelf : 'center',
+        },
+        cardStack: {////是否允许右滑返回，在iOS上默认为true，在Android上默认为false
+            gesturesEnabled: false,
+        },
+
+    });
 
     // 构造
     constructor(props) {
         super(props);
         // 初始状态
         this.state = {
-            showBigImage:false,
-            bigImageUrl:""
+            bigImageUrl:this.props.navigation.state.params.url,
         };
-
-    }
-
-    showOriginImage(url){
-        console.log("::::::: url == ", url);
-        this.setState({
-            showBigImage: true,
-            bigImageUrl: url
-        });
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <Modal
-                    animationType={"fade"}
-                    transparent={false}
-                    visible={this.state.showBigImage}
-                    onRequestClose={() => this.setState({ showBigImage: false })}
-                >
+
                     <View
                         style={{
                             flex: 1,
@@ -57,7 +65,7 @@ export default class BrowseImages extends Component {
                     >
                         <ImageViewer
                             saveToLocalByLongPress={false}
-                            style={{ width: 480, height: 800 }}
+                            style={{ width: 720, height: 1280 }}
                             imageUrls={[{ url: this.state.bigImageUrl }]}
                             enableImageZoom={true} // 是否开启手势缩放
                             index={0}
@@ -70,7 +78,6 @@ export default class BrowseImages extends Component {
                         />
 
                     </View>
-                </Modal>
             </View>
         );
     }

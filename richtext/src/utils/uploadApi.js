@@ -3,7 +3,7 @@ export function uploadFile(upload_url,formData) {
         fetch(upload_url,{
             method:'POST',
             headers:{
-                access_token:'o6NPBHKuVb_DtMbGa6HxWA'
+                access_token:'Wsh6OptXa9cZMTlUXjyWWQ'
             },
             body:formData,
         })

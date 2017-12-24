@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from "react";
-import WebViewBridge from "react-native-webview-bridge-updated";
+import WebViewBridge from "react-native-webview-bridge-updated/webview-bridge";
 import {InjectedMessageHandler} from "./WebviewMessageHandler";
 import {actions, messages} from "./const";
 import {
@@ -80,23 +80,25 @@ export default class RichTextEditor extends Component {
     }
 
     componentDidMount() {
-        this.styleSubscription = RCTDeviceEventEmitter.addListener("updateStyle", (style)=> {
+        this.styleSubscription = RCTDeviceEventEmitter.addListener("updateStyle", ({style, selection})=> {
+            this.prepareInsert()
+
             switch (parseInt(style)) {
                 case 0: //正文
                         // this.richtext.removeFormat(); //移除格式
-                    this.setZWing();
+                    this.setZWing(selection);
                     break;
                 case 1: //一级标题
-                    this.heading1()
+                    this.heading1(selection)
                     break;
                 case 2: //二级标题
-                    this.heading2()
+                    this.heading2(selection)
                     break;
                 case 3: //三级标题
-                    this.heading3()
+                    this.heading3(selection)
                     break;
                 case 4: //列表
-                    this.insertBulletsList();
+                    this.insertBulletsList(selection);
                     break;
                 case 5: //设置文本库标签名
                     this.setBlockquote();
@@ -107,11 +109,11 @@ export default class RichTextEditor extends Component {
         });
 
         this.colorSubscription = RCTDeviceEventEmitter.addListener("updateColor", (event)=> {
-            const  {udpateColorType, color} = event;
+            const  {udpateColorType, color, selection} = event;
             if(udpateColorType === 'textColor'){
-                this.setTextColor(color);
+                this.setTextColor(color, selection);
             }else{
-                this.setBackgroundColor(color);
+                this.setBackgroundColor(color, selection);
             }
 
         });
@@ -127,6 +129,7 @@ export default class RichTextEditor extends Component {
     }
 
     _onKeyboardWillShow(event) {
+        return;
         console.log("!!!!", event);
         // this.setShowKeyboard(true);
         const newKeyboardHeight = event.endCoordinates.height;
@@ -141,9 +144,6 @@ export default class RichTextEditor extends Component {
     }
 
     _onKeyboardWillHide(event) {
-        this.blurTitleEditor();
-        this.blurContentEditor();
-
         this.setState({keyboardHeight: 0});
     }
 
@@ -229,6 +229,7 @@ export default class RichTextEditor extends Component {
     onBridgeMessage(str) {
         try {
             const message = JSON.parse(str);
+            //BODY_HTML_RESPONSE
             switch (message.type) {
                 case messages.TITLE_HTML_RESPONSE:
                     if (this.titleResolve) {
@@ -238,6 +239,17 @@ export default class RichTextEditor extends Component {
                         if (this.pendingTitleHtml) {
                             clearTimeout(this.pendingTitleHtml);
                             this.pendingTitleHtml = undefined;
+                        }
+                    }
+                    break;
+                case messages.BODY_HTML_RESPONSE:
+                    if (this.bodyResolve) {
+                        this.bodyResolve(message.data);
+                        this.bodyResolve = undefined;
+                        this.bodyReject = undefined;
+                        if (this.pendingBodyHtml) {
+                            clearTimeout(this.pendingBodyHtml);
+                            this.pendingBodyHtml = undefined;
                         }
                     }
                     break;
@@ -308,12 +320,12 @@ export default class RichTextEditor extends Component {
 
                     break;
                 case messages.AUDIO_TOUCHED:
-                    // this.prepareInsert();
+                    this.prepareInsert();
                     // const {audio} = message.data;
                     // this._action_audio_touch(audio);
                     break;
                 case messages.IMG_TOUCHED: //点击webView中img时，通知RN修改链接地址
-                    // this.prepareInsert();
+                    this.prepareInsert();
                     // const {img_title, img_url} = message.data;
                     break;
                 case messages.LOG:
@@ -335,15 +347,16 @@ export default class RichTextEditor extends Component {
                     // this.props.changeActionBoxState(false);
                     break;
                 case messages.TITLE_FOCUSED: //标题获取焦点
-                    // this.titleFocusHandler && this.titleFocusHandler();
+                    this.titleFocusHandler && this.titleFocusHandler();
                     this.props.changeActionBoxState(false); //隐藏底部操作栏
                     break;
                 case messages.CONTENT_FOCUSED: //内容获取焦点
-                    // this.contentFocusHandler && this.contentFocusHandler();
+                    this.contentFocusHandler && this.contentFocusHandler();
                     this.props.changeActionBoxState(true);//显示底部操作栏
                     break;
                 case messages.CONTENT_RES_FOCUSED: //内容重新获取焦点
-                    // this.contentFocusHandler && this.contentFocusHandler();
+                    this.contentFocusHandler && this.contentFocusHandler();
+                    console.log('::::: CONTENT_RES_FOCUSED');
                     this.props.changeActionBoxState(true);//显示底部操作栏
                     this.props.contentResForcusHandler(); //底部操作栏显示的列表隐藏
 
@@ -459,6 +472,7 @@ export default class RichTextEditor extends Component {
     _sendAction(action, data) {
         let jsonString = JSON.stringify({type: action, data});
         jsonString = this.escapeJSONString(jsonString);
+        console.log('::jsonString = ', jsonString);
         this.webviewBridge.sendToBridge(jsonString);
     }
 
@@ -503,24 +517,24 @@ export default class RichTextEditor extends Component {
         this._sendAction(actions.setContentHtml, html);
     }
 
-    blurTitleEditor() {
-        this._sendAction(actions.blurTitleEditor);
+    // blurTitleEditor() {
+    //     this._sendAction(actions.blurTitleEditor);
+    // }
+
+    // blurContentEditor() {
+    //     this._sendAction(actions.blurContentEditor);
+    // }
+
+    heading1(selection) {
+        this._sendAction(actions.heading1, selection);
     }
 
-    blurContentEditor() {
-        this._sendAction(actions.blurContentEditor);
+    heading2(selection) {
+        this._sendAction(actions.heading2, selection);
     }
 
-    heading1() {
-        this._sendAction(actions.heading1);
-    }
-
-    heading2() {
-        this._sendAction(actions.heading2);
-    }
-
-    heading3() {
-        this._sendAction(actions.heading3);
+    heading3(selection) {
+        this._sendAction(actions.heading3, selection);
     }
 
     heading4() {
@@ -543,8 +557,8 @@ export default class RichTextEditor extends Component {
         this._sendAction(actions.removeFormat);
     }
 
-    setZWing() {
-        this._sendAction(actions.setZWing);
+    setZWing(selection) {
+        this._sendAction(actions.setZWing, selection);
     }
 
     setBlockquote() {
@@ -552,8 +566,8 @@ export default class RichTextEditor extends Component {
     }
 
 
-    insertBulletsList() {
-        this._sendAction(actions.insertBulletsList);
+    insertBulletsList(selection) {
+        this._sendAction(actions.insertBulletsList, selection);
     }
 
     insertOrderedList() {
@@ -561,6 +575,7 @@ export default class RichTextEditor extends Component {
     }
 
     insertLink(url, title) {
+        this.prepareInsert();
         this._sendAction(actions.insertLink, {url, title});
     }
 
@@ -594,12 +609,14 @@ export default class RichTextEditor extends Component {
         this._sendAction(actions.insertCoverImage, attributes);
     }
 
-    setBackgroundColor(color) {
-        this._sendAction(actions.setBackgroundColor, color);
+    setBackgroundColor(color, selection) {
+        this.prepareInsert();
+        this._sendAction(actions.setBackgroundColor, {color, selection});
     }
 
-    setTextColor(color) {
-        this._sendAction(actions.setTextColor, color);
+    setTextColor(color, selection) {
+        this.prepareInsert();
+        this._sendAction(actions.setTextColor, {color, selection});
     }
 
     setTitlePlaceholder(placeholder) {
@@ -676,6 +693,21 @@ export default class RichTextEditor extends Component {
             this.pendingContentHtml = setTimeout(() => {
                 if (this.contentReject) {
                     this.contentReject("timeout");
+                }
+            }, 5000);
+        });
+    }
+
+    async getBodyHtml() {
+        return new Promise((resolve, reject) => {
+            this.bodyResolve = resolve;
+            this.bodyReject = reject;
+            //
+            this._sendAction(actions.getBodyHtml);
+
+            this.pendingBodyHtml = setTimeout(() => {
+                if (this.bodyReject) {
+                    this.bodyReject("timeout");
                 }
             }, 5000);
         });

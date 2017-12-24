@@ -12,9 +12,11 @@ import {
     TouchableOpacity,
     TextInput,
     PixelRatio,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 import BaseComponent from "../BaseComponent";
+import {toastShortBottom} from "../utils/ViewUtil";
 
 
 const PlatformIOS = Platform.OS === "ios";
@@ -39,6 +41,7 @@ export default class LinkModal extends BaseComponent {
 
         };
 
+        this.reg=/^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
     }
 
     //键盘显示之后， 计算键盘的高度
@@ -171,7 +174,25 @@ export default class LinkModal extends BaseComponent {
         );
     }
 
+    _insertLink(url, title){
 
+        if(!this.reg.test(url)){
+            toastShortBottom('请输入正确的网址')
+        }else{
+            this.props.insertLink(this.state.linkUrl, this.state.linkTitle);
+            this._hideModal();
+        }
+
+    }
+    _updateLink(url, title){
+        if(!this.reg.test(url)){
+            toastShortBottom('请输入正确的网址')
+        }else{
+            this.props.updateLink(this.state.linkUrl, this.state.linkTitle);
+            this._hideModal();
+        }
+
+    }
     /**
      * 初始化并渲染（取消 和 插入 链接）UI
      * @returns {XML}
@@ -204,11 +225,11 @@ export default class LinkModal extends BaseComponent {
 
                     onPress={() => {
                         if (this._linkIsNew()) {
-                            this.props.insertLink(this.state.linkUrl, this.state.linkTitle);
+                            this._insertLink(this.state.linkUrl, this.state.linkTitle)
                         } else {
-                            this.props.updateLink(this.state.linkUrl, this.state.linkTitle);
+                            this._updateLink(this.state.linkUrl, this.state.linkTitle)
                         }
-                        this._hideModal();
+
                     }}
 
                 >

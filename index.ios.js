@@ -6,6 +6,5 @@
 
 import testZssAndroid from './app';
 import {AppRegistry} from 'react-native';
-import ImagePicker from './richtext/imgpicker/ImagePicker';
 
 AppRegistry.registerComponent('testZssAndroid', () => testZssAndroid);

@@ -32,28 +32,28 @@ export const InjectedMessageHandler = `
           zss_editor.blurContentEditor();
           break;
         case '${actions.setBold}':
-          zss_editor.setBold();
+          zss_editor.setBold(action.data);
           break;
         case '${actions.setItalic}':
-          zss_editor.setItalic();
+          zss_editor.setItalic(action.data);
           break;
         case '${actions.setUnderline}':
           zss_editor.setUnderline();
           break;
         case '${actions.heading1}':
-          zss_editor.setHeading('h1');
+          zss_editor.setHeading('h1', action.data);
           break;
         case '${actions.heading2}':
-          zss_editor.setHeading('h2');
+          zss_editor.setHeading('h2', action.data);
           break;
         case '${actions.heading3}':
-          zss_editor.setHeading('h3');
+          zss_editor.setHeading('h3', action.data);
           break;
         case '${actions.heading4}':
-          zss_editor.setHeading('h4');
+          zss_editor.setHeading('h4', action.data);
           break;
         case '${actions.heading5}':
-          zss_editor.setHeading('h5');
+          zss_editor.setHeading('h5', action.data);
           break;
         case '${actions.heading6}':
           zss_editor.setHeading('h6');
@@ -65,7 +65,7 @@ export const InjectedMessageHandler = `
           zss_editor.removeFormating();
           break;
         case '${actions.setZWing}':
-          zss_editor.setZWing('P');
+          zss_editor.setZWing('P', action.data);
           break;
         case '${actions.alignLeft}':
           zss_editor.setJustifyLeft();
@@ -80,7 +80,7 @@ export const InjectedMessageHandler = `
           zss_editor.setJustifyFull();
           break;
         case '${actions.insertBulletsList}':
-          zss_editor.setUnorderedList();
+          zss_editor.setUnorderedList(action.data);
           break;
         case '${actions.insertOrderedList}':
           zss_editor.setOrderedList();
@@ -130,6 +130,10 @@ export const InjectedMessageHandler = `
         case '${actions.setContentPlaceholder}':
           zss_editor.setContentPlaceholder(action.data);
           break;
+        case '${actions.getBodyHtml}':
+          var html = zss_editor.getBodyHTML();
+          WebViewBridge.send(JSON.stringify({type: '${messages.BODY_HTML_RESPONSE}', data: html}));
+          break;
         case '${actions.getTitleHtml}':
           var html = zss_editor.getTitleHTML();
           WebViewBridge.send(JSON.stringify({type: '${messages.TITLE_HTML_RESPONSE}', data: html}));
@@ -168,10 +172,10 @@ export const InjectedMessageHandler = `
           zss_editor.setCustomCSS(action.data);
           break;
         case '${actions.setTextColor}':
-          zss_editor.setTextColor(action.data);
+          zss_editor.setTextColor(action.data.color, action.data.selection);
           break;
         case '${actions.setBackgroundColor}':
-          zss_editor.setBackgroundColor(action.data);
+          zss_editor.setBackgroundColor(action.data.color, action.data.selection);
           break;
         case '${actions.init}':
           zss_editor.init();

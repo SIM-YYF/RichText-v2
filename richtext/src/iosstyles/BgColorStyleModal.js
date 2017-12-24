@@ -7,16 +7,15 @@ import {
     ListView,
     Dimensions,
     Image,
-    Platform,
-    Modal,
+    Platform
 } from "react-native";
 import RCTDeviceEventEmitter from 'RCTDeviceEventEmitter'
 import BaseComponent from '../BaseComponent'
-var ScreenWidth = Dimensions.get('window').width;
+
 
 
 const bgColorStyles = [
-    {icon: require("../../img/bgcolor_d3f3bb_green.png"), text: "绿色", color: '#d3f3bb'},
+    {icon: require("../../img/bgcolor_d3f3bb_green.png"), text: "绿色", color:'#d3f3bb'},
     {icon: require("../../img/bgcolor_f8f4b3_yellow.png"), text: "黄色", color: '#f8f4b3'},
     {icon: require("../../img/bgcolor_f9c2bb_red.png"), text: "红色", color: '#f9c2bb'},
 ]
@@ -37,30 +36,26 @@ class ColorStyleModal extends BaseComponent {
         this._selection_sytle = this._selection_sytle.bind(this);
     }
 
-    _change_modal_state(isFocus, type, selectedText) {
-
-        this.setState({
-            selectedText: selectedText
-        })
+    _change_modal_state(isFocus, type) {
 
         //编辑内容重新获取焦点时，隐藏样式层
-        // if (isFocus) {
-        //
-        //     this.setState({
-        //
-        //         show: false
-        //     });
-        //     return;
-        // }
-        // if (!this.state.show) {
-        //     this.props.getEditor().blurContentEditor()//在android下强制隐藏键盘
-        // }
+        if (isFocus) {
+
+            this.setState({
+
+                show: false
+            });
+            return;
+        }
+        if (!this.state.show) {
+            // Platform.OS === 'android' ? this.props.getEditor().blurContentEditor() : null; //在android下强制隐藏键盘
+        }
         this.showTimeout = setTimeout(() => {
             this.setState({
                 show: !this.state.show,
                 udpateColorType: type
             });
-        }, 100)
+        }, 200)
 
     }
 
@@ -78,19 +73,13 @@ class ColorStyleModal extends BaseComponent {
 
 //   选中对应的样式，通知编译器组件更新样式
     _selection_sytle(color) {
-        RCTDeviceEventEmitter.emit('updateColor', {
-            'udpateColorType': this.state.udpateColorType,
-            'color': color,
-            'selection': this.state.selectedText
-        });
+        RCTDeviceEventEmitter.emit('updateColor', {'udpateColorType': this.state.udpateColorType, 'color': color});
 
-        this.hiddenModal();
     }
 
     //返回cell的方法
     _render_Row(rowData, sectionID, rowID, highlightRow) {
         return (
-
             <TouchableHighlight underlayColor="#f1f1f1" onPress={this._selection_sytle.bind(this, rowData.color)}>
                 <View
                     style={{
@@ -102,8 +91,7 @@ class ColorStyleModal extends BaseComponent {
                     }}
                 >
 
-                    <Image style={{
-                        justifyContent: "center", alignItems: "center", width: 50, height: 20,
+                    <Image style={{justifyContent: "center", alignItems: "center", width: 50, height: 20,
                     }}
                            source={rowData.icon}></Image>
                     <Text
@@ -140,58 +128,15 @@ class ColorStyleModal extends BaseComponent {
     renderView() {
         return (
             <View style={styles.container}>
-                <Modal
-                    animationType='slide'           // 从底部滑入
-                    transparent={true}// 透明
-                    visible={this.state.show}    // 根据isModal决定是否显示
-                    onRequestClose={() => {
-                        this.hiddenModal()
-                    }}
-                >
-                    <View style={styles.modalStyle}>
-
-                        <View style={{
-                            height: 200,
-                            alignItems: 'center',
-                            borderWidth: 1,
-                            borderColor: '#ccc',
-                            borderRadius: 1,
-
-                            width: ScreenWidth,
-                            backgroundColor: '#ffffff'
-                        }}>
-
-                            <View style={{
-                                width: ScreenWidth,
-                                borderBottomWidth: 0.5,
-                                borderBottomColor: '#ccc',
-                                height: 30,
-                                justifyContent: 'center',
-                                alignItems: 'flex-end',
-                                backgroundColor: '#ffffff'
-                            }}>
-                                <TouchableHighlight
-                                    underlayColor="transparent"
-                                    style={styles.buttonStyle}
-                                    onPress={() => this.hiddenModal()}
-                                >
-                                    <Text style={{color: '#3393F2'}}> 取消 </Text>
-
-                                </TouchableHighlight>
-                            </View>
-
-                            <View style={styles.subView}>
-                                <ListView
-                                    style={{flex: 1}}
-                                    dataSource={this.state.dataSource}
-                                    renderRow={this._render_Row.bind(this)}
-                                    contentContainerStyle={[styles.listViewStyle, {}]} //设置cell的样式
-                                    renderSeparator={this._renderSeparator} // 设置分割线样式
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
+                <View style={styles.subView}>
+                    <ListView
+                        style={{flex: 1}}
+                        dataSource={this.state.dataSource}
+                        renderRow={this._render_Row.bind(this)}
+                        contentContainerStyle={[styles.listViewStyle, {}]} //设置cell的样式
+                        renderSeparator={this._renderSeparator} // 设置分割线样式
+                    />
+                </View>
 
             </View>
         );
@@ -209,11 +154,7 @@ class ColorStyleModal extends BaseComponent {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#ECECF0",
-    },
-    modalStyle: {
-        alignItems: "center",
-        justifyContent: "flex-end",
-        flex: 1
+        height: 180
     },
     subView: {
         flex: 1,

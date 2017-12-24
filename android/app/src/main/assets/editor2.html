@@ -4353,91 +4353,66 @@
 		zss_editor.init = function () {
 
 
-            // disableLineBreakIfNecessary('zss_editor_cover');
-            disableLineBreakIfNecessary('zss_editor_title');
-            disableLineBreakIfNecessary('zss_editor_content');
+			// disableLineBreakIfNecessary('zss_editor_cover');
+			disableLineBreakIfNecessary('zss_editor_title');
+			disableLineBreakIfNecessary('zss_editor_content');
 
-            // setupTouchEndEnableEditing('zss_editor_cover');
-            setupTouchEndEnableEditing('zss_editor_title');
-            setupTouchEndEnableEditing('zss_editor_content');
+			// setupTouchEndEnableEditing('zss_editor_cover');
+			setupTouchEndEnableEditing('zss_editor_title');
+			setupTouchEndEnableEditing('zss_editor_content');
 
-            // clearHtmlIfTextIsEmpty('zss_editor_cover');
-            clearHtmlIfTextIsEmpty('zss_editor_title');
-            clearHtmlIfTextIsEmpty('zss_editor_content');
+			// clearHtmlIfTextIsEmpty('zss_editor_cover');
+			clearHtmlIfTextIsEmpty('zss_editor_title');
+			clearHtmlIfTextIsEmpty('zss_editor_content');
 
 
-            //初始化添加封面的点击事件。
-            $(document).ready(function () {
-                zss_editor.add_cover('zss_editor_cover_add');
-            });
+			//初始化添加封面的点击事件。
+			$(document).ready(function () {
+				zss_editor.add_cover('zss_editor_cover_add');
+			});
 
 
             var isFocusin = false;
-            //
-            $(document).on('selectionchange', function (e) {
-                if (isFocusin) {
+			//
+			$(document).on('selectionchange', function (e) {
+			    if(isFocusin){
                     isFocusin = false;
-                    return;
-                }
-                if (onLongKeyDown) {
-                    return;
-                } else {
+			        return;
+				}
+				if(onLongKeyDown){
+					return;
+				}else{
 
-                    setTimeout(function () {
+                    setTimeout(function() {
                         zss_editor.calculateEditorHeightWithCaretPosition();
                         zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
                         zss_editor.enabledEditingItems(e);
                         notifyIfSelectedTextHasChanged();//通知RN被选中的文本
 
-                    }, 400)
-                }
+                    },400)
+				}
 
-            });
+			});
 
             $(window).on('focusin', function (e) {
+
+
 
                 isFocusin = true;
                 if(onLongKeyDown){
                     return;
                 }else{
-                    zss_editor.calculateEditorHeightWithCaretPosition();
-                    zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
-                    zss_editor.enabledEditingItems(e);
-                    notifyIfSelectedTextHasChanged();//通知RN被选中的文本
-                    isFocusin = false;
-
-//                    setTimeout(function() {
-//                        zss_editor.calculateEditorHeightWithCaretPosition();
-//                        zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
-//                        zss_editor.enabledEditingItems(e);
-//                        notifyIfSelectedTextHasChanged();//通知RN被选中的文本
-//						isFocusin = false;
-//					},500)
+                    setTimeout(function() {
+                        zss_editor.calculateEditorHeightWithCaretPosition();
+                        zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
+                        zss_editor.enabledEditingItems(e);
+                        notifyIfSelectedTextHasChanged();//通知RN被选中的文本
+						isFocusin = false;
+					},500)
 
                 }
 
             });
-
-//            $(window).on('click', function (e) {
-//
-//
-////                    zss_editor.calculateEditorHeightWithCaretPosition();
-////                    zss_editor.setScrollPosition();//通知RN，让webview，进行滚动
-////                    zss_editor.enabledEditingItems(e);
-////                    notifyIfSelectedTextHasChanged();//通知RN被选中的文本
-////                    isFocusin = false;
-//				    zss_editor.blurContentEditor()
-//					zss_editor.contentResFocusHandler()
-//
-//                    setTimeout(function() {
-//                        zss_editor.focusContent()
-//					},500)
-//
-//
-//
-//            });
-
-
 
 
             $(window).on('focusout', function (e) {
@@ -5721,7 +5696,7 @@
 		}
 
 		zss_editor.blurContentEditor = function () {
-//            window.last_range = window.getSelection().getRangeAt(0);
+            window.last_range = window.getSelection().getRangeAt(0);
 			$('#zss_editor_content').blur();
             zss_editor.debug('blurContentEditor --- keyboard --- hide')
 		}
@@ -5766,14 +5741,11 @@
 			});
 		}
         zss_editor.contentResFocusHandler = function () {
-            WebViewBridge.send(JSON.stringify({
-                type: 'CONTENT_RES_FOCUSED'
-            }))
-//            addFocusEvent('zss_editor_content', function () {
-//                WebViewBridge.send(JSON.stringify({
-//                    type: 'CONTENT_RES_FOCUSED'
-//                }))
-//            });
+            addFocusEvent('zss_editor_content', function () {
+                WebViewBridge.send(JSON.stringify({
+                    type: 'CONTENT_RES_FOCUSED'
+                }))
+            });
         }
 
 		zss_editor.setEditorHeight = function (editorHeight) {

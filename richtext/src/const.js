@@ -4,6 +4,7 @@ export const actions = {
   setTitleHtml: 'SET_TITLE_HTML',
   setContentHtml: 'SET_CONTENT_HTML',
   getTitleHtml: 'GET_TITLE_HTML',
+  getBodyHtml: 'GET_BODY_HTML',
   getTitleText: 'GET_TITLE_TEXT',
   toggleTitle: 'TOGGLE_TITLE',
   hideTitle: 'HIDE_TITLE',
@@ -74,6 +75,8 @@ export const actions = {
 
 
 export const messages = {
+
+  BODY_HTML_RESPONSE:'BODY_HTML_RESPONSE',
   TITLE_HTML_RESPONSE: 'TITLE_HTML_RESPONSE',
   TITLE_TEXT_RESPONSE: 'TITLE_TEXT_RESPONSE',
   CONTENT_HTML_RESPONSE: 'CONTENT_HTML_RESPONSE',

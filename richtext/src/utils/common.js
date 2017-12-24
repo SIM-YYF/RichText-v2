@@ -32,17 +32,19 @@ export function getImageSize(image, maxWidth=0, maxHeight=0) {
 export function getScaleSize(originW, originH, maxWidth=0, maxHeight=0) {
     let width = originW;
     let height = originH;
-    let scaleW = 1;
-    let scaleH = 1;
+    // let scaleW = 1;
+    // let scaleH = 1;
     if(maxWidth > 0 && width > maxWidth) {
-        scaleW = maxWidth / width;
+        // scaleW = maxWidth / width;
+        width = maxWidth;
     }
     if(maxHeight > 0 && height > maxHeight) {
-        scaleH = maxHeight / height;
+        // scaleH = maxHeight / height;
+        height = maxHeight;
     }
-    const scale = scaleW > scaleH ? scaleH : scaleW;
-    width *= scale;
-    height *= scale;
+    // const scale = scaleW > scaleH ? scaleH : scaleW;
+    // width *= scale;
+    // height *= scale;
     return {width, height};
 }
 /**
