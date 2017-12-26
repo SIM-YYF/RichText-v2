@@ -4629,9 +4629,9 @@
 
 
 		zss_editor.setScrollPosition = function () {
-             var position = window.pageYOffset;
-			 // var position = window.document.body.scrollTop;
-			 // var position = currentoffsetY;
+			var position = window.pageYOffset;
+			 var position = window.document.body.scrollTop;
+			 var position = currentoffsetY;
 			WebViewBridge.send(JSON.stringify({
 				type: 'SCROLL',
 				data: position
@@ -4662,22 +4662,29 @@
 
             var footer = document.getElementById('zss_editor_footer');
 
+            // var maxOffsetY = footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight;
             var maxOffsetY = footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight;
 
-            if (maxOffsetY < 0){
+            zss_editor.debug("------------------  updateOffset -------------")
+            zss_editor.debug("------------------  footer.offsetTop + footer.offsetHeight - zss_editor.editorHeight -------------" + footer.offsetTop + '+' + footer.offsetHeight + '-' + zss_editor.editorHeight)
+            zss_editor.debug("------------------  offsetY -------------" + offsetY)
+            zss_editor.debug("------------------  maxOffsetY -------------" + maxOffsetY)
+            if (maxOffsetY < 0)
                 maxOffsetY = 0;
-            }
+
             if (offsetY > maxOffsetY) {
                 window.scrollTo(0, (maxOffsetY));
             }
+
             zss_editor.setScrollPosition();
         }
 
+		var currentNewPos;
+//		var currentoffsetY;
 		zss_editor.calculateEditorHeightWithCaretPosition = function () {
             var caretYPosition = zss_editor.getCaretYPosition();
-            // zss_editor.debug('caretYPosition = ' + caretYPosition);
             var lineHeight = 20;
-            var halfLineHeight = lineHeight / 2;
+            var halfLineHeight = lineHeight/2;
             var offsetY = window.document.body.scrollTop;
             var editorHeight = zss_editor.editorHeight;
             var newPos;
@@ -4687,12 +4694,10 @@
             } else if (futureEditorHeight > editorHeight + offsetY) {
                 newPos = futureEditorHeight - editorHeight + halfLineHeight;
             }
-            // zss_editor.debug('newPos = ' + newPos);
             if (newPos) {
                 window.scrollTo(0, newPos);
             }
-        }
-
+		}
 
 		zss_editor.backuprange = function () {
 			var selection = window.getSelection();
@@ -5489,36 +5494,36 @@
 
            	var div_delete_icon_id = 'div_audio_close'+name;
 
-//             if(zss_editor.insertAudios.indexOf(name) != -1){//包含
-//
-//                 document.getElementById(img_loadingg_id).remove();
-// //                document.getElementById(delete_icon_id).id='audio_close';
-//
-//
-//
-//                 document.getElementById(name).src= attrs.audio;
-//                 document.getElementById(name).setAttribute("style","visibility: visible;");
-//
-//
-//                 document.getElementById(out_div_name).setAttribute("style","background-color:transparent");
-//
-//                 document.getElementById(int_div_name).setAttribute("style","position:relative;");
-//
-//
-//                 document.getElementById(delete_icon_id).setAttribute("style","position:absolute; right: 20px; top: 2px; visibility: visible");
-//                 document.getElementById(delete_icon_id).id='audio_close';
-//
-//                 //删除对应的元素
-//                 for(var i=0; i< zss_editor.insertAudios.length; i++) {
-//                     if(zss_editor.insertAudios[i] == name) {
-//                         zss_editor.insertAudios.splice(i, 1);
-//                         break;
-//                     }
-//                 }
-//
-//
-//             }else {//不包含
-//                 zss_editor.insertAudios.push(name)
+            if(zss_editor.insertAudios.indexOf(name) != -1){//包含
+
+                document.getElementById(img_loadingg_id).remove();
+//                document.getElementById(delete_icon_id).id='audio_close';
+
+
+
+                document.getElementById(name).src= attrs.audio;
+                document.getElementById(name).setAttribute("style","visibility: visible;");
+
+
+                document.getElementById(out_div_name).setAttribute("style","background-color:transparent");
+
+                document.getElementById(int_div_name).setAttribute("style","position:relative;");
+
+
+                document.getElementById(delete_icon_id).setAttribute("style","position:absolute; right: 20px; top: 2px; visibility: visible");
+                document.getElementById(delete_icon_id).id='audio_close';
+
+                //删除对应的元素
+                for(var i=0; i< zss_editor.insertAudios.length; i++) {
+                    if(zss_editor.insertAudios[i] == name) {
+                        zss_editor.insertAudios.splice(i, 1);
+                        break;
+                    }
+                }
+
+
+            }else {//不包含
+                zss_editor.insertAudios.push(name)
 
                 var audioHTML =
 					'<div id="'+out_div_name+'" align="center" style="background-color:transparent;">' +
@@ -5532,7 +5537,7 @@
 								'</div>' +
 
 
-								 '<div id="div_audio_close"  name="'+name+'" class="close">' +
+								 '<div id="'+div_delete_icon_id+'"  name="'+name+'" class="close">' +
 									'<a id="audio_close" >' +
 										'<img style="width:60px; height:40px;background: transparent; opacity: 0;cursor: pointer;"/>' +
 									'</a>' +
@@ -5546,7 +5551,7 @@
                 zss_editor.focusEditor('zss_editor_content')
                 zss_editor.calculateEditorHeightWithCaretPosition();
                 zss_editor.enabledEditingItems();
-            // }
+            }
 
 
 
@@ -5711,7 +5716,7 @@
                 var html =
 					'<div id="'+out_div_name+'" align="center" style="background-color: transparent;">' +
                     	'<div id="'+int_div_name+'" style="position:relative; background-color:transparent; width: '+attrs.width+'px; height:'+attrs.height+'px;" >' +
-							'<div id="div_img_close"  name="'+name+'" class="close">' +
+							'<div id="'+div_delete_icon_id+'"  name="'+name+'" class="close">' +
 								'<a id="img_close" >' +
 									'<img style="width:60px; height:40px;background: transparent; opacity: 0;cursor: pointer;"/>' +
 								'</a>' +
@@ -6310,17 +6315,11 @@
 
 	<div id="zss_editor_body">
 
-		<div id="zss_editor_title" class="zss_editor_title" style="font-family: 'Helvetica Neue Light', sans-serif;font-size: 22px;line-height: 31px;font-weight: bold;color: #000000;"  contenteditable="true"  placeholder="标题"  disableLineBreaks="true">
-
-        </div>
-
-        <div id="separatorContainer" style="-webkit-user-select: none;">
-			<hr style="border: none; height: 1px; background-color: #e7e7e7;">
+		<div id="zss_editor_title" class="zss_editor_title" contenteditable="true" placeholder="" disableLineBreaks="true"></div>
+		<div id="separatorContainer">
+			<hr>
 		</div>
-
-        <div id="zss_editor_content" class="zss_editor_content" style="font-family: Arial, Helvetica, sans-serif;color: #000;width: 98%;height: 98%;-webkit-overflow-scrolling: touch;overflow:auto;"  contenteditable="true"  placeholder="正文">
-
-        </div>
+		<div id="zss_editor_content" class="zss_editor_content" contenteditable="true" placeholder=""></div>
 		 <div id="zss_editor_footer"></div>
 	</div>
 	<!--<div id="createtable"></div>-->
