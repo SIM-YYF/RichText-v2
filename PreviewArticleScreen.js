@@ -4,18 +4,18 @@
 
 import React, {Component} from 'react';
 import {
-    Platform,
     StyleSheet,
     Text,
     View,
     WebView,
-    Dimensions
+    Dimensions,
+    Platform
 } from 'react-native';
 
 import BrowseImagesModal from './richtext/src/modal/BrowseImagesModal'
 
 import {toastShort} from "./richtext/src/utils/ViewUtil";
-
+const PlatformIOS = Platform.OS === 'ios'? true : false;
 const screenWidth = Dimensions.get('window').width;
 const screenheight = Dimensions.get('window').height;
 
@@ -25,14 +25,18 @@ const injectScript = `
     document.getElementById("zss_editor_title").setAttribute("contenteditable", false);
     document.getElementById("zss_editor_content").setAttribute("contenteditable", false);
     
-    var elements = document.getElementsByTagName('div')
+    var elements = document.getElementsByTagName('div');
     for(var i=0;i<elements.length;i++){
             var element = elements[i];
             var id = element.id;
             if(id == 'div_img_close'){
                element.parentElement && element.parentElement.removeChild(element)
             }
+           if(id == 'div_audio_close'){
+               element.parentElement && element.parentElement.removeChild(element)
+            }
     }
+    
     
     
     var a_elements = document.getElementsByTagName('a');
@@ -41,7 +45,7 @@ const injectScript = `
             var id = a_ele.id;
             if(id == 'imga'){
                 var attrs = a_ele.attributes;
-                var img_url = attrs.href.value;
+                var img_url =attrs.href.value;
                 a_ele.setAttribute("href", "javascript:window.postMessage(JSON.stringify({type:'img', url:'"+ img_url +"'}))");
             }
             
@@ -55,15 +59,50 @@ const injectScript = `
             
     }
     
-
+    
+    // var hr_elements = document.getElementsByTagName('hr');
+    // for(var i=0;i<hr_elements.length;i++){
+    //       var hr_element = elements[i];
+    //        hr_element.style.backgroundColor='#e7e7e7';
+    //        hr_element.style.height='1px';
+    //        hr_element.style.border='none';
+    // }
+    
+    
      var body =  document.body.innerHTML;
      window.postMessage(JSON.stringify({type:'html', html:body}));
      
      
      
-  }());
+  })();
 `;
 
+
+const injectScript2 ='(function(){' +
+    'document.getElementById("zss_editor_title").setAttribute("contenteditable", false);' +
+    'document.getElementById("zss_editor_content").setAttribute("contenteditable", false);' +
+    'var elements = document.getElementsByTagName("div");' +
+    'for(var i=0;i<elements.length;i++){' +
+         'var element = elements[i];' +
+         'var id = element.id;' +
+        'if(id == "div_img_close"){' +
+            'element.parentElement && element.parentElement.removeChild(element)' +
+        ' }' +
+    ' }' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    '' +
+    'var body =  document.body.innerHTML;' +
+    'window.postMessage(JSON.stringify({type:"html", html:body}));' +
+    '})()'
 
 export default class PreviewArticleScreen extends Component {
     static navigationOptions = ({ navigation }) => ({
@@ -100,28 +139,28 @@ export default class PreviewArticleScreen extends Component {
         super(props);
         // 初始状态
         this.state = {
-            body:'',
+            body:this.props.navigation.state.params.body,
 
         };
 
     }
 
-
-
-
     componentDidMount() {
         this.props.navigation.setParams({
             onRightPress:this.onRightPressed.bind(this),
         })
-        const {body} = this.props.navigation.state.params
-        this.setState({
-            body:body
-        })
+
     }
 
     _injectJavaScript(){
-        const script = `document.write(${this.state.body})`;
-        this.webView.injectJavaScript(script)
+        if(!PlatformIOS){
+
+            if(this.state.body){
+                this.webView.injectJavaScript(injectScript)
+            }
+
+        }
+
     }
 
 
@@ -131,6 +170,7 @@ export default class PreviewArticleScreen extends Component {
 
 
     _onMessage(event){
+        // console.log("::: event.nativeEvent.data = ", event.nativeEvent.data);
         const {type, url, html} = JSON.parse(event.nativeEvent.data);;
         if(type === 'img'){
             //查看大图
@@ -162,15 +202,22 @@ export default class PreviewArticleScreen extends Component {
                     style={styles.webView}
                     ref={r => this.webView = r}
                     source={{html: this.state.body}}
-                    automaticallyAdjustContentInsets={false}
+                    automaticallyAdjustContentInsets={true}
+                    scrollEnabled={true}
                     javaScriptEnabled={true}
-                    injectedJavaScript={injectScript}
+                    injectedJavaScript={PlatformIOS?injectScript: null}
                     domStorageEnabled={true}
-                    scalesPageToFit={false}
+                    scalesPageToFit={PlatformIOS?false:true}
                     onMessage={(event) => this._onMessage(event)}
+                    onLoadEnd={() =>this._injectJavaScript()}
                 />
 
-                <BrowseImagesModal ref={(r) => (this.BrowseImagesModal = r)}/>
+                <View>
+
+                    {/*添加超链接的图层*/}
+                    <BrowseImagesModal ref={(r) => (this.BrowseImagesModal = r)}/>
+                </View>
+
             </View>
         );
     }

@@ -21,6 +21,106 @@ RNFS.exists(imagePath).then(exist => {
     }
 });
 
+
+// 权限\请求检查["photo", "camera", "audio"]
+export function checkPermissions(type) {
+    const permissions = ["photo", "camera", "audio"];
+    return new Promise((resolve) => {
+        if (type && permissions.indexOf(type) !== -1) {
+            if (Platform.OS === 'ios') {
+                if (type === "photo") {
+                    Permissions.check('photo').then(response => {
+                        console.log("photo permission:", response);
+                        if(response != 'authorized'){
+                            Permissions.request('photo').then(response => {
+                                (response != 'authorized' && response != 'undetermined') ? resolve("failed") : resolve("success");
+                            });
+                        } else {
+                            resolve("success");
+                        }
+                    });
+                }
+                else if (type === "camera") {
+                    Permissions.check('camera').then(response => {
+                        console.log("camera permission:", response);
+                        if(response != 'authorized'){
+                            Permissions.request('camera').then(response => {
+                                (response != 'authorized' && response != 'undetermined') ? resolve("failed") : resolve("success");
+                            });
+                        } else {
+                            resolve("success");
+                        }
+                    });
+                }
+                else if (type === "audio") {
+                    Permissions.check('microphone').then(response => {
+                        console.log("audio permission:", response);
+                        if(response != 'authorized'){
+                            Permissions.request('microphone').then(response => {
+                                (response != 'authorized' && response != 'undetermined') ? resolve("failed") : resolve("success");
+                            });
+                        } else {
+                            resolve("success");
+                        }
+                    });
+                }
+            } else {
+                if (type === "photo") {
+                    const rationale = {
+                        'title': '查看相册',
+                        'message': '早儿康正请求获取查看相册权限用于发送照片'
+                    };
+                    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, rationale).then((result) => {
+                        console.log("photo permission:", result);
+                        if(result === true || result === PermissionsAndroid.RESULTS.GRANTED) {
+                            resolve("success");
+                        } else {
+                            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE, rationale).then((result) => {
+                                (result === true || result === PermissionsAndroid.RESULTS.GRANTED) ? resolve("success") : resolve("failed");
+                            })
+                        }
+                    })
+                }
+                else if (type === "camera") {
+                    const rationale = {
+                        'title': '使用相机',
+                        'message': '早儿康正请求获取使用相机权限用于拍照'
+                    };
+                    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA, rationale).then((result) => {
+                        console.log("camera permission:", result);
+                        if(result === true || result === PermissionsAndroid.RESULTS.GRANTED) {
+                            resolve("success");
+                        } else {
+                            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CAMERA, rationale).then((result) => {
+                                (result === true || result === PermissionsAndroid.RESULTS.GRANTED) ? resolve("success") : resolve("failed");
+                            })
+                        }
+                    })
+                }
+                else if (type === "audio") {
+                    const rationale = {
+                        'title': '使用麦克风',
+                        'message': '早儿康正请求获取使用麦克风权限用于录音'
+                    };
+                    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale).then((result) => {
+                        console.log("audio permission:", result);
+                        if(result === true || result === PermissionsAndroid.RESULTS.GRANTED) {
+                            resolve("success");
+                        } else {
+                            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.RECORD_AUDIO, rationale).then((result) => {
+                                (result === true || result === PermissionsAndroid.RESULTS.GRANTED) ? resolve("success") : resolve("failed");
+                            });
+                        }
+                    });
+                }
+            }
+        } else {
+            resolve("failed");
+        }
+    });
+}
+
+
 export function getImageSize(image, maxWidth=0, maxHeight=0) {
     return new Promise(resolve => {
         Image.getSize(image, (img_width, img_height) => {

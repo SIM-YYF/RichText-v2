@@ -18,7 +18,8 @@ import LoadingView from '../CMLoadingView'
 class AudioStyleModal extends Component {
     constructor(props) {
         super(props);
-        this.timeLenght = 10;
+
+        this.timeLenght = 60;
         this._timer = null;
         this.state = {
             show: false,
@@ -58,7 +59,7 @@ class AudioStyleModal extends Component {
     }
 
     _resetState() {
-        this.timeLenght = 10;
+        this.timeLenght = 60;
         this.setState({
             count: this.timeLenght,
             isRecord: false,

@@ -35,7 +35,7 @@ export const actions = {
   alignFull: 'justifyFull',
   insertBulletsList: 'unorderedList',
   insertOrderedList: 'orderedList',
-  insertLink: 'INST_LINK',
+  insertLink: 'underline',
   updateLink: 'UPDATE_LINK',
   insertImage: 'INST_IMAGE',
   insertAudio: 'INST_AUDIO',
@@ -45,8 +45,8 @@ export const actions = {
 
   box_style: 'box_style',
   box_style_color: 'box_style_color',
-  box_text_color: 'box_text_color',
-  box_background_color: 'box_background_color',
+  box_text_color: 'textColor',
+  box_background_color: 'backgroundColor',
 
 
   setSubscript: 'subscript',

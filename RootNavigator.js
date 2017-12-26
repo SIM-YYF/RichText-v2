@@ -49,10 +49,10 @@ const navigator = StackNavigator(
     {
         initialRouteName: 'FirstScreen', // 默认显示界面
         initialRouteParams: '', // 初始路由的参数
-        mode:'card', //页面的切换模式
-        headerMode: 'screen', //导航栏的显示模式
+        // mode:'card', //页面的切换模式
+        // headerMode: 'screen', //导航栏的显示模式
         cardStack: {////是否允许右滑返回，在iOS上默认为true，在Android上默认为false
-            gesturesEnabled: true,
+            gesturesEnabled: false,
         },
 
     }

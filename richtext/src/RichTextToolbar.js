@@ -89,9 +89,9 @@ export default class RichTextToolbar extends BaseComponent {
             throw new Error("Toolbar has no editor!");
         } else {
             //将工具栏注册到编译器中
-            // editor.registerToolbar(selectedItems =>
-            //     this.setSelectedItems(selectedItems)
-            // );
+            editor.registerToolbar(selectedItems =>
+                this.setSelectedItems(selectedItems)
+            );
             this.setState({editor});
         }
     }
@@ -108,6 +108,7 @@ export default class RichTextToolbar extends BaseComponent {
     }
 
     getRows(actions, selectedItems) {
+        console.log(":::::::::::: 当前选中item的样式 = ", selectedItems);
         return actions.map((action, index) => {
             return {action, selected: selectedItems.includes(action), index};
         });
@@ -132,10 +133,11 @@ export default class RichTextToolbar extends BaseComponent {
 
 
             <View style={styles.diff_icons_container}>
-                <TouchableOpacity onPress={() => {
-                    this._onPress(action)
-                }}>
-                    <View style={styles.listView_item_container}>
+                <TouchableOpacity
+                    onPress={() => {this._onPress(action)}}
+
+                >
+                    <View style={[styles.listView_item_container,{opacity:selected? 0.3: 1}]}>
                         <Image style={styles.listView_item_icon} source={icon}></Image>
 
                         <Text style={styles.listView_item_text}> {text} </Text>

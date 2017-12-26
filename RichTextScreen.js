@@ -22,13 +22,17 @@ import AudioStyleModal from "./richtext/src/styles/AudioStyleModal";
 import BgColorStyleModal from "./richtext/src/styles/BgColorStyleModal";
 import ColorStyleModal from "./richtext/src/styles/ColorStyleModal";
 
-// const ImagePicker = NativeModules.ImageCropPicker;
 import ImagePicker from 'react-native-image-picker';
 import {actions} from "./richtext/src/const";
 import LoadingView from './richtext/src/CMLoadingView'
 import {saveHtml, queryHTML, removeHtml} from "./richtext/src/utils/HtmlDao";
+import {checkPermissions} from "./richtext/src/utils/common"
+import {toastShortBottom} from "./richtext/src/utils/ViewUtil"
 
 const screenWidth = Dimensions.get('window').width;
+
+const appendNewLine = '<div><br></div><div><br></div>'
+
 export default class RichTextScreen extends Component {
 
     static navigationOptions = ({navigation}) => ({
@@ -81,39 +85,37 @@ export default class RichTextScreen extends Component {
 
 
     componentWillUnmount() {
-
-       clearInterval(this.IntervalTime)
+       // clearInterval(this.IntervalTime)
 
     }
-    componentWillMount() {
-        this._handlerQueryHtml();
-        this._handlerSaveHTML();
-    }
+
     componentDidMount() {
         this.props.navigation.setParams({
             onRightPress: this.onRightPressed.bind(this),
             onLeftPress: this.onLeftPressed.bind(this)
         })
+
+        this._handlerQueryHtml();
+        // this._handlerSaveHTML();
     }
 
     _handlerQueryHtml(){
-
         queryHTML((data) =>{
             this.setState({
-                titleHtml: data.html.titleHtml,
-                contentHtml: data.html.contentHtml,
+                titleHtml: data.html.titleHtml?data.html.titleHtml : null,
+                contentHtml: data.html.contentHtml?data.html.contentHtml + appendNewLine: null,
             })
-
         })
+
     }
 
     _handlerSaveHTML(){
 
-        this.IntervalTime = setInterval(()=>{
+        // this.IntervalTime = setInterval(()=>{
 
-            this.getHTML()
+            // this.getHTML()
 
-        }, 8000)
+        // }, 8000)
     }
 
 
@@ -211,14 +213,31 @@ export default class RichTextScreen extends Component {
 
 
     _onPressAddImage2() {
+
+        checkPermissions("photo").then(result=>{
+            if(result === "success") {
+               this._uploadImage();
+            } else {
+                this.toastShortBottom("请开启访问相册权限");
+            }
+        });
+
+    }
+
+    _uploadImage(){
+
         const options = {
             quality: 1.0,
+            storageOptions: {
+                skipBackup: true,
+                path: 'image',
+            }
         };
 
+        ImagePicker.launchImageLibrary(options, (response) => {
 
-
-        ImagePicker.launchImageLibrary(options, (image) => {
             let upload_urlD = 'https://cfs-demo.ykbenefit.com/temp/awl/uploads';
+            const image = response;
 
             if (image.didCancel) {
                 //console.log('用户取消了选择！');
@@ -230,12 +249,14 @@ export default class RichTextScreen extends Component {
             }
 
 
+
             LoadingView.show()
 
             let files = {uri: image.uri, type: 'application/octet-stream', name: getFileNameFromFileURL(image.uri)};
             let formData = new FormData();
             formData.append('file', files);
             uploadFile(upload_urlD, formData).then(responseData => {
+
                 let image_data = responseData[0]
                 //等比缩放
                 let scaleSize = getScaleSize(image_data.width, image_data.height, screenWidth - 50, 240)
@@ -248,7 +269,9 @@ export default class RichTextScreen extends Component {
                     src: image_data.url,
                 });
 
-                // this.richtext.focusContent();
+
+
+                this.richtext.focusContent();
                 LoadingView.hide()
 
             }).catch(()=>{
@@ -262,7 +285,6 @@ export default class RichTextScreen extends Component {
 
 
     }
-
     _onPressAddImage() {
 
         // ImagePicker.openPicker({
@@ -428,7 +450,7 @@ export default class RichTextScreen extends Component {
                         selectedIconTint="#cecece"
                         // iconTint="#000" //工具类中每个样式按钮的颜色值
                         // selectedButtonStyle={{ backgroundColor: "#fff" }} // 每个样式按钮选中之后的样式
-                        onPressAddLink={() => this._onPressAddLink()}
+                        // onPressAddLink={() => this._onPressAddLink()}
                         setBackgroundColor={() => this._setBackgroundColor()}
                         setTextColor={() => this._setTextColor()}
                         onActionItemPress={(action) => this._onActionItemPress(action)}
@@ -475,9 +497,9 @@ export default class RichTextScreen extends Component {
 
                 this.richtext.prepareInsert();
 
-                this.StyleModal.hiddenModal()
-                this.BgColorStyleModal.hiddenModal()
-                this.ColorStyleModal.hiddenModal()
+                // this.StyleModal.hiddenModal()
+                // this.BgColorStyleModal.hiddenModal()
+                // this.ColorStyleModal.hiddenModal()
                 this.AudioStyleModal._change_modal_state(false);
 
 
@@ -558,24 +580,21 @@ export default class RichTextScreen extends Component {
 
     onEditorInitialized() {
         this.setFocusHandlers();
-        // this.getHTML();
     }
 
 
     setFocusHandlers() {
         this.richtext.setTitleFocusHandler(() => {
-            //alert('title focus');
             this.setState({
                 show: false
             })
         });
         this.richtext.setContentFocusHandler(() => {
-            //alert('content focus');
-            console.log('内容区域获取焦点');
-            // this.AudioStyleModal.hiddenModal()
-            // this.StyleModal.hiddenModal()
-            // this.ColorStyleModal.hiddenModal()
-            // this.BgColorStyleModal.hiddenModal()
+            if(!this.state.show){
+                this.setState({
+                    show: true
+                })
+            }
         });
     }
 }

@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 
 // From: https://medium.com/man-moon/writing-modern-react-native-ui-e317ff956f02
 const defaultAnimation = {
-  duration: 500,
+  duration: 400,
   create: {
     duration: 300,
     type: LayoutAnimation.Types.easeInEaseOut,

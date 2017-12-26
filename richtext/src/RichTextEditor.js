@@ -154,7 +154,7 @@ export default class RichTextEditor extends Component {
         const spacing = marginTop + marginBottom + top + bottom;
 
         const editorAvailableHeight = Dimensions.get("window").height - keyboardHeight - spacing;
-        // this.setEditorHeight(editorAvailableHeight);
+        this.setEditorHeight(editorAvailableHeight);
     }
 
     _startAudio(audio) {
@@ -357,16 +357,16 @@ export default class RichTextEditor extends Component {
                 case messages.CONTENT_RES_FOCUSED: //内容重新获取焦点
                     this.contentFocusHandler && this.contentFocusHandler();
                     console.log('::::: CONTENT_RES_FOCUSED');
-                    this.props.changeActionBoxState(true);//显示底部操作栏
-                    this.props.contentResForcusHandler(); //底部操作栏显示的列表隐藏
+                    // this.props.changeActionBoxState(true);//显示底部操作栏
+                    // this.props.contentResForcusHandler(); //底部操作栏显示的列表隐藏
 
                     break;
 
                 case messages.SELECTION_CHANGE: { //发送消息给RN，告知当前选中的内容样式类型
-                    // const items = message.data.items;
-                    // this.state.selectionChangeListeners.map(listener => {
-                    //   listener(items);
-                    // });
+                    const items = message.data.items;
+                    this.state.selectionChangeListeners.map(listener => {
+                      listener(items);
+                    });
                     break;
                 }
                 case messages.CONTENT_CHANGE: {

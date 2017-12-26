@@ -167,7 +167,7 @@ class StyleModal extends BaseComponent {
                     <View style={styles.modalStyle}>
 
                         <View style={{
-                            height: 200,
+                            height: 240,
                             alignItems: 'center',
                             borderWidth: 1,
                             borderColor: '#ccc',

@@ -21,7 +21,7 @@ export default class CommWebViewScreen extends Component {
     static navigationOptions = ({ navigation }) => ({
 
         title: "预览内容",
-        headerRight:null,
+        headerRight:<View/>,
         headerLeft:(
             <View >
                     <Text style={{color:'#ffffff'}} onPress={() => navigation.goBack()}  >  取消 </Text>
